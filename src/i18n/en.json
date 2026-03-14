@@ -1,0 +1,420 @@
+{
+  "landing": {
+    "hero": {
+      "title": "Your online presence, scored in 60 seconds",
+      "subtitle": "7 dimensions. Real data. Actionable plan.",
+      "cta": "Start your free audit",
+      "noCreditCard": "Free, no credit card required"
+    },
+    "howItWorks": {
+      "title": "How it works",
+      "step1Title": "Enter your business details",
+      "step1Description": "Website, socials, Google Business — we'll take it from there.",
+      "step2Title": "AI analyzes 7 dimensions",
+      "step2Description": "SEO, website quality, social media, branding, GBP, ads readiness, and reputation.",
+      "step3Title": "Get your score & action plan",
+      "step3Description": "Detailed scores, pass/fail items, and a priority-ranked plan to improve."
+    },
+    "categories": {
+      "title": "What we analyze",
+      "seo": "SEO — technical health, on-page optimization, and local search visibility.",
+      "website": "Website — speed, UX, mobile readiness, and conversion optimization.",
+      "social": "Social Media — profile completeness, content quality, and engagement.",
+      "branding": "Branding — visual identity, messaging, positioning, and consistency.",
+      "gbp": "Google Business Profile — completeness, photos, reviews, and activity.",
+      "ads": "Ads Readiness — tracking pixels, funnel structure, and creative assets.",
+      "reputation": "Reputation — review volume, ratings, response management, and trust signals."
+    },
+    "socialProof": {
+      "title": "Trusted by businesses across industries",
+      "auditsCompleted": "Audits completed",
+      "averageImprovement": "Avg. score improvement",
+      "categoriesAnalyzed": "Categories analyzed"
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "q1": "Is the audit really free?",
+      "a1": "Yes. The full 7-category audit with detailed scores and action plan is completely free. No credit card, no hidden fees.",
+      "q2": "How long does the audit take?",
+      "a2": "About 60 seconds. You'll see results streaming in real-time as each category completes.",
+      "q3": "What data do you need?",
+      "a3": "Just your website URL. Social media handles and Google Business Profile are optional but give a more complete picture.",
+      "q4": "Is my data private?",
+      "a4": "Absolutely. We only analyze publicly available data. Your results are private and only visible to you.",
+      "q5": "What happens after the audit?",
+      "a5": "You get detailed scores, a priority-ranked action plan, and a generated landing page preview. You can save results, compare with competitors, or book a free strategy call."
+    },
+    "finalCta": {
+      "title": "Ready to see where you stand?",
+      "subtitle": "Join thousands of businesses that have improved their online presence.",
+      "cta": "Start your free audit now"
+    },
+    "footer": {
+      "poweredBy": "Powered by",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service"
+    }
+  },
+  "wizard": {
+    "progress": "Step {current} of {total}",
+    "back": "Back",
+    "next": "Next",
+    "skip": "Skip this step",
+    "step1": {
+      "title": "Your business",
+      "subtitle": "Let's start with the basics.",
+      "email": "Email address",
+      "emailPlaceholder": "you@company.com",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Enter a valid email address",
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Your name",
+      "fullNameRequired": "Name is required",
+      "businessName": "Business name",
+      "businessNamePlaceholder": "Your Company",
+      "businessNameRequired": "Business name is required",
+      "websiteUrl": "Website URL",
+      "websiteUrlPlaceholder": "https://yourcompany.com",
+      "websiteUrlRequired": "Website URL is required",
+      "websiteUrlInvalid": "Enter a valid URL (include https://)"
+    },
+    "step2": {
+      "title": "Social presence",
+      "subtitle": "Add your social media profiles for a more complete audit.",
+      "instagram": "Instagram handle",
+      "instagramPlaceholder": "@yourbusiness",
+      "facebook": "Facebook page URL",
+      "facebookPlaceholder": "https://facebook.com/yourbusiness",
+      "tiktok": "TikTok handle",
+      "tiktokPlaceholder": "@yourbusiness",
+      "linkedin": "LinkedIn page URL",
+      "linkedinPlaceholder": "https://linkedin.com/company/yourbusiness",
+      "noSocials": "I don't have any social media"
+    },
+    "step3": {
+      "title": "Google Business",
+      "subtitle": "Your Google Business Profile helps with local visibility.",
+      "gbpUrl": "Google Business Profile URL",
+      "gbpUrlPlaceholder": "https://g.page/yourbusiness",
+      "noGbp": "I don't have one",
+      "notSure": "I'm not sure",
+      "helpTooltip": "Search for your business on Google Maps and copy the URL from your browser's address bar."
+    },
+    "step4": {
+      "title": "Your goals",
+      "subtitle": "Help us tailor the audit to your needs.",
+      "industry": "Industry",
+      "industryPlaceholder": "Select your industry",
+      "industryRequired": "Please select an industry",
+      "industries": {
+        "restaurant": "Restaurant & Food",
+        "retail": "Retail & E-commerce",
+        "healthWellness": "Health & Wellness",
+        "realEstate": "Real Estate",
+        "professionalServices": "Professional Services",
+        "construction": "Construction & Home Services",
+        "beauty": "Beauty & Personal Care",
+        "automotive": "Automotive",
+        "education": "Education & Training",
+        "technology": "Technology",
+        "hospitality": "Hospitality & Tourism",
+        "fitness": "Fitness & Sports",
+        "legal": "Legal Services",
+        "finance": "Finance & Insurance",
+        "marketing": "Marketing & Advertising",
+        "other": "Other"
+      },
+      "mainChallenge": "Main challenge",
+      "challengeRequired": "Please select your main challenge",
+      "challenges": {
+        "moreLeads": "Generate more leads",
+        "betterWebsite": "Improve my website",
+        "socialGrowth": "Grow on social media",
+        "brandIdentity": "Strengthen my brand",
+        "localVisibility": "Increase local visibility"
+      },
+      "businessSize": "Business size",
+      "sizeRequired": "Please select your business size",
+      "sizes": {
+        "solo": "Solo / Freelancer",
+        "small": "2–10 employees",
+        "medium": "11–50 employees",
+        "large": "50+ employees"
+      }
+    },
+    "step5": {
+      "title": "Launch your audit",
+      "subtitle": "Here's what we'll analyze. Ready?",
+      "summaryTitle": "Audit summary",
+      "website": "Website",
+      "socials": "Social profiles",
+      "gbp": "Google Business Profile",
+      "goals": "Goals",
+      "launchButton": "Analyze My Presence",
+      "estimatedTime": "Results in ~60 seconds",
+      "editInfo": "Edit info"
+    }
+  },
+  "results": {
+    "analyzing": "Analyzing your online presence...",
+    "categoryStarted": "Analyzing {category}...",
+    "categoryCompleted": "{category} — complete",
+    "categoryFailed": "Could not analyze {category}",
+    "overallScore": "Overall Score",
+    "grade": "Grade",
+    "categories": "Categories",
+    "details": "Details",
+    "recommendations": "Recommendations",
+    "actionPlan": "Action Plan",
+    "viewDetails": "View details",
+    "collapseDetails": "Collapse",
+    "subScore": "Score",
+    "items": "Items",
+    "status": {
+      "pass": "Pass",
+      "fail": "Fail",
+      "warning": "Warning",
+      "info": "Info"
+    },
+    "priority": {
+      "high": "High priority",
+      "medium": "Medium priority",
+      "low": "Low priority"
+    },
+    "effort": {
+      "quick-win": "Quick win",
+      "moderate": "Moderate effort",
+      "major-project": "Major project"
+    },
+    "impact": {
+      "high": "High impact",
+      "medium": "Medium impact",
+      "low": "Low impact"
+    },
+    "saveCta": "Save your results",
+    "saveDescription": "Create a free account to save your audit, track progress, and unlock your free re-audit.",
+    "compareCta": "Compare with competitors",
+    "compareDescription": "See how you stack up against your competition — category by category.",
+    "comparePrice": "$99 per competitor",
+    "bookCta": "Book a free strategy call",
+    "bookDescription": "Talk with a Forge strategist about your results and next steps. No obligation.",
+    "bookButton": "Schedule now",
+    "landingPagePreview": "Your generated landing page",
+    "landingPageDescription": "Based on your audit data, we generated a preview of what your landing page could look like.",
+    "viewPreview": "View preview",
+    "wantThisBuilt": "Want this built for real?",
+    "shareResults": "Share results",
+    "shareCopied": "Link copied to clipboard",
+    "downloadPdf": "Download PDF",
+    "reaudit": {
+      "title": "Free re-audit available",
+      "description": "You have a free re-audit available. Run it again to see how your improvements affected your score.",
+      "daysLeft": "{days} days left",
+      "expired": "Re-audit window expired",
+      "runAgain": "Run re-audit",
+      "comparison": "Score comparison",
+      "before": "Before",
+      "after": "After",
+      "improved": "Improved by {points} points",
+      "declined": "Declined by {points} points",
+      "unchanged": "Unchanged"
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Dashboard",
+      "totalAudits": "Total Audits",
+      "totalLeads": "Total Leads",
+      "conversionRate": "Conversion Rate",
+      "totalRevenue": "Total Revenue",
+      "recentActivity": "Recent Activity"
+    },
+    "leads": {
+      "title": "Lead Pipeline",
+      "searchPlaceholder": "Search leads...",
+      "filterStatus": "Filter by status",
+      "filterSource": "Filter by source",
+      "allStatuses": "All statuses",
+      "allSources": "All sources",
+      "status": {
+        "new": "New",
+        "contacted": "Contacted",
+        "qualified": "Qualified",
+        "closed": "Closed"
+      },
+      "source": {
+        "organic": "Organic",
+        "campaign": "Campaign",
+        "direct": "Direct"
+      },
+      "columns": {
+        "name": "Name",
+        "business": "Business",
+        "score": "Score",
+        "grade": "Grade",
+        "status": "Status",
+        "source": "Source",
+        "date": "Date",
+        "actions": "Actions"
+      },
+      "viewAudit": "View audit",
+      "contactLead": "Contact",
+      "noLeads": "No leads found"
+    },
+    "campaigns": {
+      "title": "Campaigns",
+      "createNew": "Create Campaign",
+      "name": "Campaign name",
+      "namePlaceholder": "e.g., LinkedIn Outreach Q1",
+      "maxCompetitors": "Max competitor analyses",
+      "expiresAt": "Expires at",
+      "noExpiry": "No expiry",
+      "create": "Create",
+      "copyLink": "Copy link",
+      "linkCopied": "Campaign link copied",
+      "analytics": {
+        "clicks": "Clicks",
+        "auditsStarted": "Audits Started",
+        "auditsCompleted": "Audits Completed",
+        "callsBooked": "Calls Booked"
+      },
+      "status": {
+        "active": "Active",
+        "expired": "Expired",
+        "inactive": "Inactive"
+      },
+      "noCampaigns": "No campaigns yet"
+    },
+    "settings": {
+      "title": "Settings",
+      "team": "Team Members",
+      "notifications": "Notifications",
+      "billing": "Billing"
+    },
+    "nav": {
+      "dashboard": "Dashboard",
+      "leads": "Leads",
+      "campaigns": "Campaigns",
+      "settings": "Settings",
+      "runAudit": "Run Audit",
+      "logout": "Log out"
+    }
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signInWith": "Sign in with {provider}",
+    "signInGoogle": "Sign in with Google",
+    "signInEmail": "Sign in with email",
+    "emailPlaceholder": "you@company.com",
+    "sendMagicLink": "Send magic link",
+    "magicLinkSent": "Check your email for a sign-in link",
+    "signOut": "Sign out",
+    "saveToAccess": "Sign in to save your results",
+    "createAccount": "Create your free account"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "errorDescription": "We encountered an unexpected error. Please try again.",
+    "retry": "Try again",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "or": "or",
+    "and": "and",
+    "of": "of",
+    "noResults": "No results found",
+    "learnMore": "Learn more",
+    "comingSoon": "Coming soon",
+    "beta": "Beta",
+    "new": "New",
+    "deprecated": "Deprecated",
+    "language": "Language",
+    "english": "English",
+    "spanish": "Spanish",
+    "darkMode": "Dark mode",
+    "lightMode": "Light mode",
+    "poweredByForge": "Powered by Forge Digital",
+    "copyright": "© {year} Forge Digital. All rights reserved."
+  },
+  "email": {
+    "auditComplete": {
+      "subject": "Your online presence audit is ready",
+      "greeting": "Hi {name},",
+      "body": "Your 7-dimension online presence audit is complete. Here's a quick summary:",
+      "overallScore": "Overall score: {score}/100 ({grade})",
+      "viewResults": "View your full results",
+      "footer": "This audit was generated by Forge Digital's AI-powered analysis engine."
+    },
+    "reauditReminder": {
+      "day3": {
+        "subject": "Tips to improve your score",
+        "greeting": "Hi {name},",
+        "body": "It's been 3 days since your online presence audit. Here are some quick wins from your action plan that you can tackle this week:",
+        "cta": "View your action plan"
+      },
+      "day10": {
+        "subject": "Your free re-audit window is closing",
+        "greeting": "Hi {name},",
+        "body": "You have 4 days left to use your free re-audit. Have you made any improvements? Run it again to see your new score.",
+        "cta": "Run your free re-audit"
+      },
+      "day13": {
+        "subject": "Last chance: free re-audit expires tomorrow",
+        "greeting": "Hi {name},",
+        "body": "Your free re-audit window expires tomorrow. After that, re-audits start at $199. Don't miss out.",
+        "cta": "Run it now — it's free"
+      }
+    },
+    "abandonedAudit": {
+      "subject": "You left your audit unfinished",
+      "greeting": "Hi {name},",
+      "body": "You started an online presence audit but didn't finish. Your results are still waiting — pick up where you left off.",
+      "cta": "Complete your audit"
+    },
+    "competitorPurchase": {
+      "subject": "Your competitor analysis is ready",
+      "greeting": "Hi {name},",
+      "body": "Your competitor analysis for {competitorName} is complete. See how you compare across all 7 categories.",
+      "cta": "View comparison"
+    },
+    "common": {
+      "unsubscribe": "Unsubscribe from these emails",
+      "address": "Forge Digital — Monterrey, Mexico",
+      "viewInBrowser": "View in browser"
+    }
+  },
+  "categories": {
+    "seo": "SEO",
+    "website": "Website Quality",
+    "social": "Social Media",
+    "branding": "Branding & Positioning",
+    "gbp": "Google Business Profile",
+    "ads": "Ads Readiness",
+    "reputation": "Reputation & Reviews"
+  },
+  "grades": {
+    "excellent": "Excellent",
+    "good": "Good",
+    "average": "Average",
+    "belowAverage": "Below Average",
+    "poor": "Poor"
+  },
+  "payment": {
+    "checkout": "Checkout",
+    "processing": "Processing payment...",
+    "success": "Payment successful",
+    "failed": "Payment failed",
+    "tryAgain": "Please try again or use a different payment method.",
+    "competitorAnalysis": "Competitor Analysis",
+    "competitorAnalysisDescription": "Full diagnostic with industry benchmarks and category-by-category comparison.",
+    "reaudit": "Re-audit",
+    "reauditDescription": "Run a fresh audit and compare your scores with your previous results.",
+    "securePayment": "Secure payment powered by Stripe"
+  }
+}

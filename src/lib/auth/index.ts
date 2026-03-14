@@ -1,1 +1,2 @@
-// Placeholder — to be implemented by owning agent
+export { getSession, getUser, requireAuth, requireRole } from './guards';
+export { createAuthClient } from './client';

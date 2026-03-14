@@ -1,0 +1,142 @@
+// src/lib/landing-gen/templates.ts
+// HTML template fragments for generated landing pages
+
+const ICON_SVG: Record<string, string> = {
+  shield: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+  zap: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+  'trending-up': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',
+  users: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  star: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+  'check-circle': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+};
+
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+export interface LandingPageCopy {
+  hero: {
+    headline: string;
+    subheadline: string;
+    ctaText: string;
+    ctaSubtext: string;
+  };
+  features: {
+    title: string;
+    description: string;
+    icon: string;
+  }[];
+  socialProof: {
+    headline: string;
+    stats: { value: string; label: string }[];
+  };
+  about: {
+    headline: string;
+    body: string;
+  };
+  cta: {
+    headline: string;
+    subheadline: string;
+    buttonText: string;
+    contactInfo: string;
+  };
+  meta: {
+    pageTitle: string;
+    pageDescription: string;
+  };
+}
+
+export function buildHeroSection(copy: LandingPageCopy['hero']): string {
+  return `
+  <section class="hero">
+    <div class="container">
+      <h1>${escapeHtml(copy.headline)}</h1>
+      <p>${escapeHtml(copy.subheadline)}</p>
+      <a href="#contact" class="cta-btn">${escapeHtml(copy.ctaText)}</a>
+      <span class="cta-sub">${escapeHtml(copy.ctaSubtext)}</span>
+    </div>
+  </section>`;
+}
+
+export function buildFeaturesSection(features: LandingPageCopy['features']): string {
+  const cards = features
+    .map((f) => {
+      const icon = ICON_SVG[f.icon] ?? ICON_SVG['check-circle'];
+      return `
+      <div class="feature-card">
+        <div class="feature-icon">${icon}</div>
+        <h3>${escapeHtml(f.title)}</h3>
+        <p>${escapeHtml(f.description)}</p>
+      </div>`;
+    })
+    .join('');
+
+  return `
+  <section class="features">
+    <div class="container">
+      <h2>Why Choose Us</h2>
+      <div class="features-grid">${cards}</div>
+    </div>
+  </section>`;
+}
+
+export function buildSocialProofSection(copy: LandingPageCopy['socialProof']): string {
+  const stats = copy.stats
+    .map(
+      (s) => `
+      <div class="stat">
+        <div class="stat-value">${escapeHtml(s.value)}</div>
+        <div class="stat-label">${escapeHtml(s.label)}</div>
+      </div>`
+    )
+    .join('');
+
+  return `
+  <section class="social-proof">
+    <div class="container">
+      <h2>${escapeHtml(copy.headline)}</h2>
+      <div class="stats-grid">${stats}</div>
+    </div>
+  </section>`;
+}
+
+export function buildAboutSection(copy: LandingPageCopy['about']): string {
+  const paragraphs = copy.body
+    .split('\n')
+    .filter((p) => p.trim())
+    .map((p) => `<p>${escapeHtml(p.trim())}</p>`)
+    .join('\n      ');
+
+  return `
+  <section class="about">
+    <div class="container">
+      <h2>${escapeHtml(copy.headline)}</h2>
+      ${paragraphs}
+    </div>
+  </section>`;
+}
+
+export function buildCtaSection(copy: LandingPageCopy['cta']): string {
+  return `
+  <section class="final-cta" id="contact">
+    <div class="container">
+      <h2>${escapeHtml(copy.headline)}</h2>
+      <p>${escapeHtml(copy.subheadline)}</p>
+      <a href="#contact" class="cta-btn">${escapeHtml(copy.buttonText)}</a>
+      <div class="contact-info">${escapeHtml(copy.contactInfo)}</div>
+    </div>
+  </section>`;
+}
+
+export function buildForgeBadge(): string {
+  return `
+  <footer class="forge-badge">
+    This page was generated by <a href="https://forgedigital.com" target="_blank" rel="noopener">Forge Digital</a> &mdash;
+    <a href="https://audit.forgedigital.com" target="_blank" rel="noopener">Want one like this? Get your free audit</a>
+  </footer>`;
+}

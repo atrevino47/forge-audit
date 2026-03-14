@@ -1,0 +1,420 @@
+{
+  "landing": {
+    "hero": {
+      "title": "Tu presencia en línea, evaluada en 60 segundos",
+      "subtitle": "7 dimensiones. Datos reales. Plan de acción.",
+      "cta": "Inicia tu auditoría gratuita",
+      "noCreditCard": "Gratis, sin tarjeta de crédito"
+    },
+    "howItWorks": {
+      "title": "Cómo funciona",
+      "step1Title": "Ingrese los datos de su negocio",
+      "step1Description": "Sitio web, redes sociales, Google Business — nosotros nos encargamos del resto.",
+      "step2Title": "La IA analiza 7 dimensiones",
+      "step2Description": "SEO, calidad del sitio web, redes sociales, marca, GBP, preparación para anuncios y reputación.",
+      "step3Title": "Obtenga su puntaje y plan de acción",
+      "step3Description": "Puntajes detallados, elementos aprobados/reprobados y un plan priorizado para mejorar."
+    },
+    "categories": {
+      "title": "Lo que analizamos",
+      "seo": "SEO — salud técnica, optimización on-page y visibilidad en búsquedas locales.",
+      "website": "Sitio Web — velocidad, experiencia de usuario, adaptabilidad móvil y optimización de conversión.",
+      "social": "Redes Sociales — completitud del perfil, calidad del contenido y engagement.",
+      "branding": "Marca — identidad visual, mensajes, posicionamiento y consistencia.",
+      "gbp": "Perfil de Google Business — completitud, fotos, reseñas y actividad.",
+      "ads": "Preparación para Anuncios — píxeles de rastreo, estructura de embudo y activos creativos.",
+      "reputation": "Reputación — volumen de reseñas, calificaciones, gestión de respuestas y señales de confianza."
+    },
+    "socialProof": {
+      "title": "La confianza de negocios en todas las industrias",
+      "auditsCompleted": "Auditorías completadas",
+      "averageImprovement": "Mejora promedio de puntaje",
+      "categoriesAnalyzed": "Categorías analizadas"
+    },
+    "faq": {
+      "title": "Preguntas frecuentes",
+      "q1": "¿La auditoría es realmente gratuita?",
+      "a1": "Sí. La auditoría completa de 7 categorías con puntajes detallados y plan de acción es totalmente gratuita. Sin tarjeta de crédito, sin costos ocultos.",
+      "q2": "¿Cuánto tiempo toma la auditoría?",
+      "a2": "Aproximadamente 60 segundos. Verá los resultados en tiempo real a medida que cada categoría se complete.",
+      "q3": "¿Qué datos necesitan?",
+      "a3": "Solo la URL de su sitio web. Las redes sociales y el Perfil de Google Business son opcionales pero ofrecen un panorama más completo.",
+      "q4": "¿Mis datos son privados?",
+      "a4": "Por supuesto. Solo analizamos datos disponibles públicamente. Sus resultados son privados y solo usted puede verlos.",
+      "q5": "¿Qué pasa después de la auditoría?",
+      "a5": "Obtiene puntajes detallados, un plan de acción priorizado y una vista previa de landing page generada. Puede guardar resultados, compararse con competidores o agendar una llamada estratégica gratuita."
+    },
+    "finalCta": {
+      "title": "¿Listo para saber dónde está parado?",
+      "subtitle": "Únase a miles de negocios que han mejorado su presencia en línea.",
+      "cta": "Inicie su auditoría gratuita ahora"
+    },
+    "footer": {
+      "poweredBy": "Desarrollado por",
+      "privacy": "Política de Privacidad",
+      "terms": "Términos de Servicio"
+    }
+  },
+  "wizard": {
+    "progress": "Paso {current} de {total}",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "skip": "Omitir este paso",
+    "step1": {
+      "title": "Su negocio",
+      "subtitle": "Comencemos con lo básico.",
+      "email": "Correo electrónico",
+      "emailPlaceholder": "usted@empresa.com",
+      "emailRequired": "El correo es obligatorio",
+      "emailInvalid": "Ingrese un correo electrónico válido",
+      "fullName": "Nombre completo",
+      "fullNamePlaceholder": "Su nombre",
+      "fullNameRequired": "El nombre es obligatorio",
+      "businessName": "Nombre del negocio",
+      "businessNamePlaceholder": "Su Empresa",
+      "businessNameRequired": "El nombre del negocio es obligatorio",
+      "websiteUrl": "URL del sitio web",
+      "websiteUrlPlaceholder": "https://suempresa.com",
+      "websiteUrlRequired": "La URL del sitio web es obligatoria",
+      "websiteUrlInvalid": "Ingrese una URL válida (incluya https://)"
+    },
+    "step2": {
+      "title": "Presencia en redes",
+      "subtitle": "Agregue sus perfiles de redes sociales para una auditoría más completa.",
+      "instagram": "Usuario de Instagram",
+      "instagramPlaceholder": "@sunegocio",
+      "facebook": "URL de página de Facebook",
+      "facebookPlaceholder": "https://facebook.com/sunegocio",
+      "tiktok": "Usuario de TikTok",
+      "tiktokPlaceholder": "@sunegocio",
+      "linkedin": "URL de página de LinkedIn",
+      "linkedinPlaceholder": "https://linkedin.com/company/sunegocio",
+      "noSocials": "No tengo redes sociales"
+    },
+    "step3": {
+      "title": "Google Business",
+      "subtitle": "Su Perfil de Google Business ayuda con la visibilidad local.",
+      "gbpUrl": "URL del Perfil de Google Business",
+      "gbpUrlPlaceholder": "https://g.page/sunegocio",
+      "noGbp": "No tengo uno",
+      "notSure": "No estoy seguro",
+      "helpTooltip": "Busque su negocio en Google Maps y copie la URL de la barra de direcciones de su navegador."
+    },
+    "step4": {
+      "title": "Sus objetivos",
+      "subtitle": "Ayúdenos a personalizar la auditoría según sus necesidades.",
+      "industry": "Industria",
+      "industryPlaceholder": "Seleccione su industria",
+      "industryRequired": "Por favor seleccione una industria",
+      "industries": {
+        "restaurant": "Restaurante y Alimentos",
+        "retail": "Comercio y E-commerce",
+        "healthWellness": "Salud y Bienestar",
+        "realEstate": "Bienes Raíces",
+        "professionalServices": "Servicios Profesionales",
+        "construction": "Construcción y Servicios para el Hogar",
+        "beauty": "Belleza y Cuidado Personal",
+        "automotive": "Automotriz",
+        "education": "Educación y Capacitación",
+        "technology": "Tecnología",
+        "hospitality": "Hotelería y Turismo",
+        "fitness": "Fitness y Deportes",
+        "legal": "Servicios Legales",
+        "finance": "Finanzas y Seguros",
+        "marketing": "Marketing y Publicidad",
+        "other": "Otra"
+      },
+      "mainChallenge": "Desafío principal",
+      "challengeRequired": "Por favor seleccione su desafío principal",
+      "challenges": {
+        "moreLeads": "Generar más prospectos",
+        "betterWebsite": "Mejorar mi sitio web",
+        "socialGrowth": "Crecer en redes sociales",
+        "brandIdentity": "Fortalecer mi marca",
+        "localVisibility": "Aumentar visibilidad local"
+      },
+      "businessSize": "Tamaño del negocio",
+      "sizeRequired": "Por favor seleccione el tamaño de su negocio",
+      "sizes": {
+        "solo": "Independiente / Freelancer",
+        "small": "2–10 empleados",
+        "medium": "11–50 empleados",
+        "large": "50+ empleados"
+      }
+    },
+    "step5": {
+      "title": "Lanzar su auditoría",
+      "subtitle": "Esto es lo que analizaremos. ¿Listo?",
+      "summaryTitle": "Resumen de la auditoría",
+      "website": "Sitio web",
+      "socials": "Perfiles de redes sociales",
+      "gbp": "Perfil de Google Business",
+      "goals": "Objetivos",
+      "launchButton": "Analizar Mi Presencia",
+      "estimatedTime": "Resultados en ~60 segundos",
+      "editInfo": "Editar información"
+    }
+  },
+  "results": {
+    "analyzing": "Analizando su presencia en línea...",
+    "categoryStarted": "Analizando {category}...",
+    "categoryCompleted": "{category} — completado",
+    "categoryFailed": "No se pudo analizar {category}",
+    "overallScore": "Puntaje General",
+    "grade": "Calificación",
+    "categories": "Categorías",
+    "details": "Detalles",
+    "recommendations": "Recomendaciones",
+    "actionPlan": "Plan de Acción",
+    "viewDetails": "Ver detalles",
+    "collapseDetails": "Colapsar",
+    "subScore": "Puntaje",
+    "items": "Elementos",
+    "status": {
+      "pass": "Aprobado",
+      "fail": "Reprobado",
+      "warning": "Advertencia",
+      "info": "Información"
+    },
+    "priority": {
+      "high": "Alta prioridad",
+      "medium": "Prioridad media",
+      "low": "Baja prioridad"
+    },
+    "effort": {
+      "quick-win": "Logro rápido",
+      "moderate": "Esfuerzo moderado",
+      "major-project": "Proyecto mayor"
+    },
+    "impact": {
+      "high": "Alto impacto",
+      "medium": "Impacto medio",
+      "low": "Bajo impacto"
+    },
+    "saveCta": "Guarde sus resultados",
+    "saveDescription": "Cree una cuenta gratuita para guardar su auditoría, seguir su progreso y desbloquear su re-auditoría gratuita.",
+    "compareCta": "Compare con competidores",
+    "compareDescription": "Vea cómo se compara con su competencia — categoría por categoría.",
+    "comparePrice": "$99 por competidor",
+    "bookCta": "Agende una llamada estratégica gratuita",
+    "bookDescription": "Hable con un estratega de Forge sobre sus resultados y próximos pasos. Sin compromiso.",
+    "bookButton": "Agendar ahora",
+    "landingPagePreview": "Su landing page generada",
+    "landingPageDescription": "Con base en los datos de su auditoría, generamos una vista previa de cómo podría verse su landing page.",
+    "viewPreview": "Ver vista previa",
+    "wantThisBuilt": "¿Quiere que la construyamos de verdad?",
+    "shareResults": "Compartir resultados",
+    "shareCopied": "Enlace copiado al portapapeles",
+    "downloadPdf": "Descargar PDF",
+    "reaudit": {
+      "title": "Re-auditoría gratuita disponible",
+      "description": "Tiene una re-auditoría gratuita disponible. Ejecútela de nuevo para ver cómo sus mejoras afectaron su puntaje.",
+      "daysLeft": "{days} días restantes",
+      "expired": "Ventana de re-auditoría expirada",
+      "runAgain": "Ejecutar re-auditoría",
+      "comparison": "Comparación de puntajes",
+      "before": "Antes",
+      "after": "Después",
+      "improved": "Mejoró {points} puntos",
+      "declined": "Disminuyó {points} puntos",
+      "unchanged": "Sin cambios"
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Panel de Control",
+      "totalAudits": "Auditorías Totales",
+      "totalLeads": "Prospectos Totales",
+      "conversionRate": "Tasa de Conversión",
+      "totalRevenue": "Ingresos Totales",
+      "recentActivity": "Actividad Reciente"
+    },
+    "leads": {
+      "title": "Pipeline de Prospectos",
+      "searchPlaceholder": "Buscar prospectos...",
+      "filterStatus": "Filtrar por estado",
+      "filterSource": "Filtrar por fuente",
+      "allStatuses": "Todos los estados",
+      "allSources": "Todas las fuentes",
+      "status": {
+        "new": "Nuevo",
+        "contacted": "Contactado",
+        "qualified": "Calificado",
+        "closed": "Cerrado"
+      },
+      "source": {
+        "organic": "Orgánico",
+        "campaign": "Campaña",
+        "direct": "Directo"
+      },
+      "columns": {
+        "name": "Nombre",
+        "business": "Negocio",
+        "score": "Puntaje",
+        "grade": "Calificación",
+        "status": "Estado",
+        "source": "Fuente",
+        "date": "Fecha",
+        "actions": "Acciones"
+      },
+      "viewAudit": "Ver auditoría",
+      "contactLead": "Contactar",
+      "noLeads": "No se encontraron prospectos"
+    },
+    "campaigns": {
+      "title": "Campañas",
+      "createNew": "Crear Campaña",
+      "name": "Nombre de campaña",
+      "namePlaceholder": "ej., Outreach LinkedIn Q1",
+      "maxCompetitors": "Máximo de análisis de competidores",
+      "expiresAt": "Fecha de expiración",
+      "noExpiry": "Sin expiración",
+      "create": "Crear",
+      "copyLink": "Copiar enlace",
+      "linkCopied": "Enlace de campaña copiado",
+      "analytics": {
+        "clicks": "Clics",
+        "auditsStarted": "Auditorías Iniciadas",
+        "auditsCompleted": "Auditorías Completadas",
+        "callsBooked": "Llamadas Agendadas"
+      },
+      "status": {
+        "active": "Activa",
+        "expired": "Expirada",
+        "inactive": "Inactiva"
+      },
+      "noCampaigns": "Sin campañas aún"
+    },
+    "settings": {
+      "title": "Configuración",
+      "team": "Miembros del Equipo",
+      "notifications": "Notificaciones",
+      "billing": "Facturación"
+    },
+    "nav": {
+      "dashboard": "Panel",
+      "leads": "Prospectos",
+      "campaigns": "Campañas",
+      "settings": "Configuración",
+      "runAudit": "Ejecutar Auditoría",
+      "logout": "Cerrar sesión"
+    }
+  },
+  "auth": {
+    "signIn": "Iniciar sesión",
+    "signInWith": "Iniciar sesión con {provider}",
+    "signInGoogle": "Iniciar sesión con Google",
+    "signInEmail": "Iniciar sesión con correo",
+    "emailPlaceholder": "usted@empresa.com",
+    "sendMagicLink": "Enviar enlace de acceso",
+    "magicLinkSent": "Revise su correo para el enlace de inicio de sesión",
+    "signOut": "Cerrar sesión",
+    "saveToAccess": "Inicie sesión para guardar sus resultados",
+    "createAccount": "Cree su cuenta gratuita"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Algo salió mal",
+    "errorDescription": "Ocurrió un error inesperado. Por favor intente de nuevo.",
+    "retry": "Intentar de nuevo",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "yes": "Sí",
+    "no": "No",
+    "or": "o",
+    "and": "y",
+    "of": "de",
+    "noResults": "No se encontraron resultados",
+    "learnMore": "Más información",
+    "comingSoon": "Próximamente",
+    "beta": "Beta",
+    "new": "Nuevo",
+    "deprecated": "Obsoleto",
+    "language": "Idioma",
+    "english": "Inglés",
+    "spanish": "Español",
+    "darkMode": "Modo oscuro",
+    "lightMode": "Modo claro",
+    "poweredByForge": "Desarrollado por Forge Digital",
+    "copyright": "© {year} Forge Digital. Todos los derechos reservados."
+  },
+  "email": {
+    "auditComplete": {
+      "subject": "Su auditoría de presencia en línea está lista",
+      "greeting": "Hola {name},",
+      "body": "Su auditoría de presencia en línea de 7 dimensiones está completa. Aquí tiene un resumen rápido:",
+      "overallScore": "Puntaje general: {score}/100 ({grade})",
+      "viewResults": "Ver sus resultados completos",
+      "footer": "Esta auditoría fue generada por el motor de análisis de IA de Forge Digital."
+    },
+    "reauditReminder": {
+      "day3": {
+        "subject": "Tips para mejorar su puntaje",
+        "greeting": "Hola {name},",
+        "body": "Han pasado 3 días desde su auditoría de presencia en línea. Aquí tiene algunos logros rápidos de su plan de acción que puede abordar esta semana:",
+        "cta": "Ver su plan de acción"
+      },
+      "day10": {
+        "subject": "Su ventana de re-auditoría gratuita se está cerrando",
+        "greeting": "Hola {name},",
+        "body": "Le quedan 4 días para usar su re-auditoría gratuita. ¿Ha hecho mejoras? Ejecútela de nuevo para ver su nuevo puntaje.",
+        "cta": "Ejecutar su re-auditoría gratuita"
+      },
+      "day13": {
+        "subject": "Última oportunidad: la re-auditoría gratuita expira mañana",
+        "greeting": "Hola {name},",
+        "body": "Su ventana de re-auditoría gratuita expira mañana. Después de eso, las re-auditorías comienzan en $199. No se lo pierda.",
+        "cta": "Ejecútela ahora — es gratis"
+      }
+    },
+    "abandonedAudit": {
+      "subject": "Dejó su auditoría sin terminar",
+      "greeting": "Hola {name},",
+      "body": "Inició una auditoría de presencia en línea pero no la terminó. Sus resultados siguen esperándolo — retome donde lo dejó.",
+      "cta": "Completar su auditoría"
+    },
+    "competitorPurchase": {
+      "subject": "Su análisis de competidor está listo",
+      "greeting": "Hola {name},",
+      "body": "Su análisis de competidor para {competitorName} está completo. Vea cómo se compara en las 7 categorías.",
+      "cta": "Ver comparación"
+    },
+    "common": {
+      "unsubscribe": "Dejar de recibir estos correos",
+      "address": "Forge Digital — Monterrey, México",
+      "viewInBrowser": "Ver en el navegador"
+    }
+  },
+  "categories": {
+    "seo": "SEO",
+    "website": "Calidad del Sitio Web",
+    "social": "Redes Sociales",
+    "branding": "Marca y Posicionamiento",
+    "gbp": "Perfil de Google Business",
+    "ads": "Preparación para Anuncios",
+    "reputation": "Reputación y Reseñas"
+  },
+  "grades": {
+    "excellent": "Excelente",
+    "good": "Bueno",
+    "average": "Promedio",
+    "belowAverage": "Por debajo del promedio",
+    "poor": "Deficiente"
+  },
+  "payment": {
+    "checkout": "Pagar",
+    "processing": "Procesando pago...",
+    "success": "Pago exitoso",
+    "failed": "El pago falló",
+    "tryAgain": "Por favor intente de nuevo o use un método de pago diferente.",
+    "competitorAnalysis": "Análisis de Competidor",
+    "competitorAnalysisDescription": "Diagnóstico completo con benchmarks de industria y comparación categoría por categoría.",
+    "reaudit": "Re-auditoría",
+    "reauditDescription": "Ejecute una nueva auditoría y compare sus puntajes con sus resultados anteriores.",
+    "securePayment": "Pago seguro procesado por Stripe"
+  }
+}

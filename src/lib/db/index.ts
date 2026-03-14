@@ -1,1 +1,2 @@
-// Placeholder — to be implemented by owning agent
+export { createServiceClient, createBrowserClient } from './client';
+export { createServerSupabaseClient } from './server';
