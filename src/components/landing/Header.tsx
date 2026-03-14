@@ -41,7 +41,7 @@ export function Header() {
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
-            <Link href="/login">
+            <Link href="/auth/login">
               <Button variant="ghost" size="sm" className="text-forge-text-muted hover:text-forge-text cursor-pointer">
                 {t('nav.login')}
               </Button>
@@ -89,7 +89,7 @@ export function Header() {
                 </a>
               ))}
               <div className="pt-3 border-t border-forge-glass-border space-y-2">
-                <Link href="/login" className="block">
+                <Link href="/auth/login" className="block">
                   <Button variant="ghost" size="sm" className={cn('w-full justify-start text-forge-text-muted cursor-pointer')}>
                     {t('nav.login')}
                   </Button>
