@@ -5,6 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  /* === shadcn/ui color mappings === */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
@@ -45,75 +46,122 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* === Forge Brand Tokens === */
+  --color-forge-base: var(--forge-base);
+  --color-forge-surface: var(--forge-surface);
+  --color-forge-card: var(--forge-card);
+  --color-forge-accent: var(--forge-accent);
+  --color-forge-accent-hover: var(--forge-accent-hover);
+  --color-forge-text: var(--forge-text);
+  --color-forge-text-muted: var(--forge-text-muted);
+  --color-forge-border: var(--forge-border);
+  --color-forge-glass: var(--forge-glass);
+  --color-forge-glass-border: var(--forge-glass-border);
+  --color-forge-pass: var(--forge-pass);
+  --color-forge-warning: var(--forge-warning);
+  --color-forge-fail: var(--forge-fail);
 }
 
+/* === Dark mode (DEFAULT) === */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.809 0.105 251.813);
-  --chart-2: oklch(0.623 0.214 259.815);
-  --chart-3: oklch(0.546 0.245 262.881);
-  --chart-4: oklch(0.488 0.243 264.376);
-  --chart-5: oklch(0.424 0.199 265.638);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --background: #0B1120;
+  --foreground: #F8FAFC;
+  --card: #1E293B;
+  --card-foreground: #F8FAFC;
+  --popover: #0F172A;
+  --popover-foreground: #F8FAFC;
+  --primary: #D4A537;
+  --primary-foreground: #0B1120;
+  --secondary: #1E293B;
+  --secondary-foreground: #F8FAFC;
+  --muted: #1E293B;
+  --muted-foreground: #94A3B8;
+  --accent: #D4A537;
+  --accent-foreground: #0B1120;
+  --destructive: #EF4444;
+  --border: rgba(212, 165, 55, 0.12);
+  --input: rgba(212, 165, 55, 0.12);
+  --ring: #D4A537;
+  --chart-1: #D4A537;
+  --chart-2: #22C55E;
+  --chart-3: #F59E0B;
+  --chart-4: #EF4444;
+  --chart-5: #94A3B8;
+  --radius: 0.5rem;
+  --sidebar: #0F172A;
+  --sidebar-foreground: #F8FAFC;
+  --sidebar-primary: #D4A537;
+  --sidebar-primary-foreground: #0B1120;
+  --sidebar-accent: #1E293B;
+  --sidebar-accent-foreground: #F8FAFC;
+  --sidebar-border: rgba(212, 165, 55, 0.12);
+  --sidebar-ring: #D4A537;
+
+  /* Forge brand tokens */
+  --forge-base: #0B1120;
+  --forge-surface: #0F172A;
+  --forge-card: #1E293B;
+  --forge-accent: #D4A537;
+  --forge-accent-hover: #E5B84A;
+  --forge-text: #F8FAFC;
+  --forge-text-muted: #94A3B8;
+  --forge-border: rgba(212, 165, 55, 0.12);
+  --forge-glass: rgba(30, 41, 59, 0.5);
+  --forge-glass-border: rgba(212, 165, 55, 0.12);
+  --forge-pass: #22C55E;
+  --forge-warning: #F59E0B;
+  --forge-fail: #EF4444;
 }
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.809 0.105 251.813);
-  --chart-2: oklch(0.623 0.214 259.815);
-  --chart-3: oklch(0.546 0.245 262.881);
-  --chart-4: oklch(0.488 0.243 264.376);
-  --chart-5: oklch(0.424 0.199 265.638);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+/* === Light mode (dashboard toggle only) === */
+.light {
+  --background: #F8FAFC;
+  --foreground: #0F172A;
+  --card: rgba(255, 255, 255, 0.7);
+  --card-foreground: #0F172A;
+  --popover: rgba(241, 245, 249, 0.9);
+  --popover-foreground: #0F172A;
+  --primary: #B8941F;
+  --primary-foreground: #F8FAFC;
+  --secondary: rgba(241, 245, 249, 0.9);
+  --secondary-foreground: #0F172A;
+  --muted: rgba(241, 245, 249, 0.9);
+  --muted-foreground: #64748B;
+  --accent: #B8941F;
+  --accent-foreground: #F8FAFC;
+  --destructive: #EF4444;
+  --border: rgba(184, 148, 31, 0.2);
+  --input: rgba(184, 148, 31, 0.2);
+  --ring: #B8941F;
+  --chart-1: #B8941F;
+  --chart-2: #22C55E;
+  --chart-3: #F59E0B;
+  --chart-4: #EF4444;
+  --chart-5: #64748B;
+  --sidebar: rgba(241, 245, 249, 0.9);
+  --sidebar-foreground: #0F172A;
+  --sidebar-primary: #B8941F;
+  --sidebar-primary-foreground: #F8FAFC;
+  --sidebar-accent: rgba(255, 255, 255, 0.7);
+  --sidebar-accent-foreground: #0F172A;
+  --sidebar-border: rgba(184, 148, 31, 0.2);
+  --sidebar-ring: #B8941F;
+
+  /* Forge brand tokens — light mode */
+  --forge-base: #F8FAFC;
+  --forge-surface: rgba(241, 245, 249, 0.9);
+  --forge-card: rgba(255, 255, 255, 0.7);
+  --forge-accent: #B8941F;
+  --forge-accent-hover: #A3820E;
+  --forge-text: #0F172A;
+  --forge-text-muted: #64748B;
+  --forge-border: rgba(184, 148, 31, 0.2);
+  --forge-glass: rgba(255, 255, 255, 0.7);
+  --forge-glass-border: rgba(184, 148, 31, 0.2);
+  --forge-pass: #22C55E;
+  --forge-warning: #F59E0B;
+  --forge-fail: #EF4444;
 }
 
 @layer base {
@@ -125,5 +173,50 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+/* === Glassmorphism Utility Classes === */
+@layer utilities {
+  .glass {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    background: var(--forge-glass);
+    border: 1px solid var(--forge-glass-border);
+  }
+
+  .glass-card {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    background: var(--forge-glass);
+    border: 1px solid var(--forge-glass-border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    transition: border-color 200ms ease-out;
+  }
+
+  .glass-card:hover {
+    border-color: rgba(212, 165, 55, 0.2);
+  }
+
+  .glass-surface {
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    background: var(--forge-surface);
+  }
+
+  .gold-glow {
+    box-shadow: 0 0 20px rgba(212, 165, 55, 0.15),
+                0 0 40px rgba(212, 165, 55, 0.05);
+  }
+
+  .gold-glow-hover:hover {
+    box-shadow: 0 0 20px rgba(212, 165, 55, 0.25),
+                0 0 40px rgba(212, 165, 55, 0.1);
+  }
+
+  .gold-border-glow {
+    border: 1px solid rgba(212, 165, 55, 0.3);
+    box-shadow: 0 0 15px rgba(212, 165, 55, 0.1);
   }
 }
