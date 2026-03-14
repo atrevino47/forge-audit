@@ -1,6 +1,7 @@
 import { errorResponse } from '@/app/api/_shared/helpers';
+import { createServiceClient } from '@/lib/db/client';
 import type { SSEEvent } from '@contracts/events';
-import type { AuditCategory, CategoryResult } from '@contracts/audit-types';
+import type { AuditCategory, CategoryResult, Recommendation, Grade } from '@contracts/audit-types';
 import { AUDIT_CATEGORIES } from '@contracts/constants';
 
 // Track active connections per audit to enforce single-connection limit
@@ -10,49 +11,22 @@ function formatSSE(event: SSEEvent): string {
   return `event: ${event.type}\ndata: ${JSON.stringify(event)}\n\n`;
 }
 
-function mockCategoryResult(category: AuditCategory): CategoryResult {
-  const scores: Record<AuditCategory, number> = {
-    seo: 72, website: 65, social: 58, branding: 74,
-    gbp: 70, ads: 62, reputation: 75,
-  };
-  const score = scores[category];
+// Maximum time to poll before giving up (90 seconds)
+const MAX_POLL_MS = 90_000;
+// Interval between DB polls (1.5 seconds)
+const POLL_INTERVAL_MS = 1_500;
 
-  return {
-    category,
-    score,
-    status: 'completed',
-    subCategories: [
-      {
-        name: `${category} - General`,
-        score,
-        items: [
-          {
-            id: crypto.randomUUID(),
-            label: `${category} primary check`,
-            status: score > 70 ? 'pass' : score > 50 ? 'warning' : 'fail',
-            detail: `Analysis result for ${category}`,
-          },
-          {
-            id: crypto.randomUUID(),
-            label: `${category} secondary check`,
-            status: score > 65 ? 'pass' : 'warning',
-            detail: `Secondary analysis for ${category}`,
-          },
-        ],
-      },
-    ],
-    recommendations: [
-      {
-        id: crypto.randomUUID(),
-        title: `Improve your ${category} score`,
-        description: `Based on our analysis, there are opportunities to improve your ${category} performance.`,
-        priority: score < 60 ? 'high' : score < 75 ? 'medium' : 'low',
-        effort: score < 60 ? 'major-project' : 'moderate',
-        impact: 'high',
-        category,
-      },
-    ],
-  };
+interface CategoryRow {
+  category: AuditCategory;
+  status: string;
+  score: number | null;
+  results: CategoryResult | null;
+}
+
+interface AuditRow {
+  status: string;
+  overall_score: number | null;
+  overall_grade: string | null;
 }
 
 export async function GET(
@@ -75,6 +49,9 @@ export async function GET(
   const abortController = new AbortController();
   activeConnections.set(auditId, abortController);
 
+  // Keep-alive function reference — set inside stream start, called from interval
+  let keepAliveFn: (() => void) | null = null;
+
   const stream = new ReadableStream({
     async start(controller) {
       const encoder = new TextEncoder();
@@ -87,13 +64,13 @@ export async function GET(
         }
       }
 
-      function sendKeepAlive() {
+      keepAliveFn = () => {
         try {
           controller.enqueue(encoder.encode(': keepalive\n\n'));
         } catch {
           // Stream already closed
         }
-      }
+      };
 
       // Handle abort (client disconnect or new connection replacing this one)
       abortController.signal.addEventListener('abort', () => {
@@ -104,91 +81,177 @@ export async function GET(
         }
       });
 
+      const supabase = createServiceClient();
+
       try {
-        // TODO Phase 2: Replace mock flow with real DB polling.
-        // Real implementation will:
-        //   1. Poll audit_categories table every 1-2s
-        //   2. Push events as each category transitions
-        //   3. Compute overall score when all 7 complete
-        //   4. Wait for landing page generation
-        //   5. Close stream
+        // ── Check if audit already completed ──────────────────────────────
+        const { data: auditCheck, error: auditCheckErr } = await supabase
+          .from('audits')
+          .select('status, overall_score, overall_grade')
+          .eq('id', auditId)
+          .single();
 
-        // --- MOCK STREAMING FLOW ---
-        // Simulate categories completing one by one with realistic timing
-        for (const category of AUDIT_CATEGORIES) {
-          if (abortController.signal.aborted) break;
-
-          // Category started
-          send({ type: 'category_started', category });
-
-          // Simulate processing time (2-5 seconds per category)
-          const processingTime = 2000 + Math.random() * 3000;
-          await new Promise<void>((resolve, reject) => {
-            const timeout = setTimeout(resolve, processingTime);
-            abortController.signal.addEventListener('abort', () => {
-              clearTimeout(timeout);
-              reject(new Error('aborted'));
-            }, { once: true });
-          }).catch(() => { /* aborted */ });
-
-          if (abortController.signal.aborted) break;
-
-          // Category completed
-          const results = mockCategoryResult(category);
-          send({
-            type: 'category_completed',
-            category,
-            score: results.score,
-            results,
-          });
+        if (auditCheckErr || !auditCheck) {
+          send({ type: 'error', message: 'Audit not found' });
+          return;
         }
 
-        if (!abortController.signal.aborted) {
-          // All categories done — send overall completion
-          send({
-            type: 'overall_completed',
-            overallScore: 68,
-            grade: 'C+',
-            actionPlan: [
-              {
-                id: crypto.randomUUID(),
-                title: 'Fix page speed issues',
-                description: 'Your website loads slowly on mobile. Optimize images and minimize JavaScript.',
-                priority: 'high',
-                effort: 'moderate',
-                impact: 'high',
-                category: 'website',
-              },
-              {
-                id: crypto.randomUUID(),
-                title: 'Add meta descriptions',
-                description: 'Several pages are missing meta descriptions.',
-                priority: 'high',
-                effort: 'quick-win',
-                impact: 'medium',
-                category: 'seo',
-              },
-            ],
-          });
+        // If audit is already completed, send all results immediately
+        if (auditCheck.status === 'completed') {
+          await sendAllCompletedResults(supabase, auditId, auditCheck as AuditRow, send);
+          return;
+        }
 
-          // Simulate landing page generation delay
+        // If audit already failed before we even started polling
+        if (auditCheck.status === 'failed') {
+          send({ type: 'error', message: 'Audit failed before results could be generated' });
+          return;
+        }
+
+        // ── DB polling loop ──────────────────────────────────────────────
+        const sentStarted = new Set<AuditCategory>();
+        const sentCompleted = new Set<AuditCategory>();
+        const sentFailed = new Set<AuditCategory>();
+        const pollStart = Date.now();
+
+        while (!abortController.signal.aborted) {
+          // Safety timeout
+          if (Date.now() - pollStart > MAX_POLL_MS) {
+            send({ type: 'error', message: 'Audit timed out waiting for results' });
+            break;
+          }
+
+          // Query all category rows for this audit
+          const { data: categoryRows, error: catError } = await supabase
+            .from('audit_categories')
+            .select('category, status, score, results')
+            .eq('audit_id', auditId);
+
+          if (catError) {
+            send({ type: 'error', message: `Database error: ${catError.message}` });
+            break;
+          }
+
+          const rows = (categoryRows ?? []) as CategoryRow[];
+
+          // Process each category row
+          for (const row of rows) {
+            const cat = row.category;
+
+            if (row.status === 'running' && !sentStarted.has(cat)) {
+              send({ type: 'category_started', category: cat });
+              sentStarted.add(cat);
+            }
+
+            if (row.status === 'completed' && !sentCompleted.has(cat)) {
+              // Ensure we also sent started for this category
+              if (!sentStarted.has(cat)) {
+                send({ type: 'category_started', category: cat });
+                sentStarted.add(cat);
+              }
+
+              const results = row.results as CategoryResult;
+              send({
+                type: 'category_completed',
+                category: cat,
+                score: results.score,
+                results,
+              });
+              sentCompleted.add(cat);
+            }
+
+            if (row.status === 'failed' && !sentFailed.has(cat)) {
+              // Ensure we also sent started for this category
+              if (!sentStarted.has(cat)) {
+                send({ type: 'category_started', category: cat });
+                sentStarted.add(cat);
+              }
+
+              send({
+                type: 'category_failed',
+                category: cat,
+                error: `Analysis failed for ${cat}`,
+              });
+              sentFailed.add(cat);
+            }
+          }
+
+          // Check if all 7 categories are done (completed or failed)
+          const doneCount = sentCompleted.size + sentFailed.size;
+          if (doneCount >= AUDIT_CATEGORIES.length) {
+            // Fetch overall audit results
+            const { data: auditRow, error: auditErr } = await supabase
+              .from('audits')
+              .select('status, overall_score, overall_grade')
+              .eq('id', auditId)
+              .single();
+
+            if (auditErr || !auditRow) {
+              send({ type: 'error', message: 'Failed to fetch audit results' });
+              break;
+            }
+
+            const audit = auditRow as AuditRow;
+
+            if (audit.status === 'failed') {
+              send({ type: 'error', message: 'Audit failed' });
+              break;
+            }
+
+            // Build action plan from all completed category recommendations
+            const allResults = rows
+              .filter((r) => r.status === 'completed' && r.results)
+              .map((r) => r.results as CategoryResult);
+
+            const actionPlan = buildActionPlanFromResults(allResults);
+
+            send({
+              type: 'overall_completed',
+              overallScore: audit.overall_score ?? 0,
+              grade: (audit.overall_grade ?? 'F') as Grade,
+              actionPlan,
+            });
+
+            // Check for generated landing page
+            const { data: pageRow } = await supabase
+              .from('generated_pages')
+              .select('id')
+              .eq('audit_id', auditId)
+              .limit(1)
+              .maybeSingle();
+
+            if (pageRow) {
+              const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://audit.forgedigital.com';
+              send({
+                type: 'landing_page_ready',
+                previewUrl: `${appUrl}/preview/${pageRow.id}`,
+                pageId: pageRow.id,
+              });
+            }
+
+            break;
+          }
+
+          // Check if overall audit has failed
+          const { data: auditStatusRow } = await supabase
+            .from('audits')
+            .select('status')
+            .eq('id', auditId)
+            .single();
+
+          if (auditStatusRow && auditStatusRow.status === 'failed') {
+            send({ type: 'error', message: 'Audit failed' });
+            break;
+          }
+
+          // Wait before next poll (abort-aware)
           await new Promise<void>((resolve, reject) => {
-            const timeout = setTimeout(resolve, 3000);
+            const timeout = setTimeout(resolve, POLL_INTERVAL_MS);
             abortController.signal.addEventListener('abort', () => {
               clearTimeout(timeout);
               reject(new Error('aborted'));
             }, { once: true });
           }).catch(() => { /* aborted */ });
-
-          if (!abortController.signal.aborted) {
-            const mockPageId = crypto.randomUUID();
-            const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://audit.forgedigital.com';
-            send({
-              type: 'landing_page_ready',
-              previewUrl: `${appUrl}/preview/${mockPageId}`,
-              pageId: mockPageId,
-            });
-          }
         }
       } catch (err) {
         if (!abortController.signal.aborted) {
@@ -212,7 +275,9 @@ export async function GET(
   const keepAliveInterval = setInterval(() => {
     if (abortController.signal.aborted) {
       clearInterval(keepAliveInterval);
+      return;
     }
+    keepAliveFn?.();
   }, 15000);
 
   // Clean up when the response is done
@@ -228,4 +293,98 @@ export async function GET(
       'X-Accel-Buffering': 'no', // Disable nginx buffering
     },
   });
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+/**
+ * Build a prioritized action plan from all completed category results.
+ * Sorted by: priority (high -> low), then impact (high -> low).
+ */
+function buildActionPlanFromResults(categoryResults: CategoryResult[]): Recommendation[] {
+  const allRecs = categoryResults.flatMap((r) => r.recommendations);
+
+  const priorityOrder: Record<string, number> = { high: 0, medium: 1, low: 2 };
+  const impactOrder: Record<string, number> = { high: 0, medium: 1, low: 2 };
+
+  return allRecs.sort((a, b) => {
+    const pDiff = priorityOrder[a.priority] - priorityOrder[b.priority];
+    if (pDiff !== 0) return pDiff;
+    return impactOrder[a.impact] - impactOrder[b.impact];
+  });
+}
+
+/**
+ * Send all results for an already-completed audit without polling.
+ */
+async function sendAllCompletedResults(
+  supabase: ReturnType<typeof createServiceClient>,
+  auditId: string,
+  audit: AuditRow,
+  send: (event: SSEEvent) => void,
+): Promise<void> {
+  // Fetch all category rows
+  const { data: categoryRows, error: catError } = await supabase
+    .from('audit_categories')
+    .select('category, status, score, results')
+    .eq('audit_id', auditId);
+
+  if (catError) {
+    send({ type: 'error', message: `Database error: ${catError.message}` });
+    return;
+  }
+
+  const rows = (categoryRows ?? []) as CategoryRow[];
+  const completedResults: CategoryResult[] = [];
+
+  for (const row of rows) {
+    const cat = row.category;
+
+    // Send started + completed/failed for each category
+    send({ type: 'category_started', category: cat });
+
+    if (row.status === 'completed' && row.results) {
+      const results = row.results as CategoryResult;
+      send({
+        type: 'category_completed',
+        category: cat,
+        score: results.score,
+        results,
+      });
+      completedResults.push(results);
+    } else if (row.status === 'failed') {
+      send({
+        type: 'category_failed',
+        category: cat,
+        error: `Analysis failed for ${cat}`,
+      });
+    }
+  }
+
+  // Send overall completion
+  const actionPlan = buildActionPlanFromResults(completedResults);
+
+  send({
+    type: 'overall_completed',
+    overallScore: audit.overall_score ?? 0,
+    grade: (audit.overall_grade ?? 'F') as Grade,
+    actionPlan,
+  });
+
+  // Check for generated landing page
+  const { data: pageRow } = await supabase
+    .from('generated_pages')
+    .select('id')
+    .eq('audit_id', auditId)
+    .limit(1)
+    .maybeSingle();
+
+  if (pageRow) {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://audit.forgedigital.com';
+    send({
+      type: 'landing_page_ready',
+      previewUrl: `${appUrl}/preview/${pageRow.id}`,
+      pageId: pageRow.id,
+    });
+  }
 }

@@ -6,6 +6,7 @@ import { X, Mail } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTranslations } from '@/hooks/use-translations';
 import { Button } from '@/components/ui/button';
+import { createBrowserClient } from '@/lib/db/client';
 
 interface SaveResultsModalProps {
   isOpen: boolean;
@@ -20,8 +21,16 @@ export function SaveResultsModal({ isOpen, onClose, auditId }: SaveResultsModalP
   const [magicLinkSent, setMagicLinkSent] = useState(false);
 
   async function handleGoogleAuth() {
-    // Redirect to Google OAuth with audit ID in state
-    window.location.href = `/api/auth/callback?provider=google&audit_id=${auditId}`;
+    const supabase = createBrowserClient();
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/api/auth/callback?next=/audit/results/${auditId}`,
+      },
+    });
+    if (error) {
+      console.error('OAuth error:', error.message);
+    }
   }
 
   async function handleMagicLink() {

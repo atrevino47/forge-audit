@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/db/server';
+import { createServiceClient } from '@/lib/db/client';
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -19,8 +20,18 @@ export async function GET(request: Request) {
       return NextResponse.redirect(`${origin}/auth/error?error=exchange_failed`);
     }
 
-    // TODO Phase 2: Create/update users row from auth.users data
-    // TODO Phase 2: Link lead record if audit flow
+    // Create/update users row from auth.users data
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const serviceDb = createServiceClient();
+      await serviceDb.from('users').upsert({
+        id: user.id,
+        email: user.email ?? '',
+        full_name: user.user_metadata?.full_name ?? user.user_metadata?.name ?? '',
+        avatar_url: user.user_metadata?.avatar_url ?? null,
+        role: 'user',
+      }, { onConflict: 'id' });
+    }
 
     return NextResponse.redirect(`${origin}${next}`);
   } catch (err) {

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from '@/hooks/use-translations';
 import { WizardProgress } from './WizardProgress';
 import { WizardNavigation } from './WizardNavigation';
@@ -90,6 +90,8 @@ const slideVariants = {
 
 export function WizardLayout() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const campaignSlug = searchParams.get('campaign');
   const t = useTranslations('wizard');
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -219,6 +221,7 @@ export function WizardLayout() {
               }
             : {}),
           ...(formData.gbpUrl ? { gbpUrl: formData.gbpUrl } : {}),
+          ...(campaignSlug ? { campaignSlug } : {}),
         };
 
         const response = await fetch('/api/audit/start', {
@@ -251,7 +254,7 @@ export function WizardLayout() {
     setDirection(1);
     setCurrentStep((prev) => Math.min(prev + 1, TOTAL_STEPS - 1));
     setError(null);
-  }, [currentStep, canProceed, formData, router]);
+  }, [currentStep, canProceed, formData, router, campaignSlug]);
 
   const handleBack = useCallback(() => {
     setDirection(-1);
