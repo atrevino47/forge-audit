@@ -236,3 +236,40 @@
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
+
+/* === Micro-interaction: Input focus gold glow === */
+@layer utilities {
+  .input-glow:focus {
+    box-shadow: 0 0 0 2px rgba(212, 165, 55, 0.15), 0 0 12px rgba(212, 165, 55, 0.08);
+    border-color: rgba(212, 165, 55, 0.4);
+  }
+
+  .input-focus-glow:focus {
+    border-color: var(--forge-accent);
+    box-shadow: 0 0 0 3px rgba(212, 165, 55, 0.15),
+                0 0 12px rgba(212, 165, 55, 0.08);
+  }
+
+  .button-micro {
+    transition: transform 150ms ease-out, box-shadow 200ms ease-out, background-color 200ms ease-out, color 200ms ease-out;
+  }
+  .button-micro:hover {
+    transform: scale(1.02);
+  }
+  .button-micro:focus-visible {
+    box-shadow: 0 0 0 3px rgba(212, 165, 55, 0.25),
+                0 0 16px rgba(212, 165, 55, 0.1);
+  }
+  .button-micro:active {
+    transform: scale(0.98);
+  }
+
+  .card-hover-lift {
+    transition: transform 200ms ease-out, box-shadow 200ms ease-out, border-color 200ms ease-out;
+  }
+  .card-hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15),
+                0 0 12px rgba(212, 165, 55, 0.06);
+  }
+}

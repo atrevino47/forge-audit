@@ -39,20 +39,40 @@ export async function getUser(): Promise<User | null> {
 }
 
 /**
+ * Dev-mode fallback session for local testing without OAuth.
+ */
+function devFallbackSession(): SessionData | null {
+  if (process.env.NODE_ENV !== 'development') return null;
+  return {
+    user: {
+      id: '00000000-0000-0000-0000-000000000000',
+      email: 'dev@forgedigital.com',
+      user_metadata: { full_name: 'Dev Admin' },
+      app_metadata: {},
+      aud: 'authenticated',
+      created_at: new Date().toISOString(),
+    } as unknown as User,
+    role: 'admin',
+  };
+}
+
+/**
  * Require authentication. Returns session data or throws.
- * Use in API routes that need a logged-in user.
+ * In development, falls back to a mock admin session.
  */
 export async function requireAuth(): Promise<SessionData> {
   const session = await getSession();
-  if (!session) {
-    throw new AuthError('UNAUTHORIZED', 'Authentication required');
-  }
-  return session;
+  if (session) return session;
+
+  const devSession = devFallbackSession();
+  if (devSession) return devSession;
+
+  throw new AuthError('UNAUTHORIZED', 'Authentication required');
 }
 
 /**
  * Require a specific role. Returns session data or throws.
- * Use in admin/team API routes.
+ * In development, falls back to a mock admin session.
  */
 export async function requireRole(...roles: SessionData['role'][]): Promise<SessionData> {
   const session = await requireAuth();

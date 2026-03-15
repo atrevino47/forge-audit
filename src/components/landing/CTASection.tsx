@@ -21,17 +21,17 @@ export function CTASection() {
           transition={{ duration: 0.5 }}
           className="text-center"
         >
-          <div className="glass-card max-w-2xl mx-auto p-10 sm:p-14 rounded-2xl gold-border-glow">
+          <div className="glass-card max-w-2xl mx-auto p-6 sm:p-10 md:p-14 rounded-2xl gold-border-glow">
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight mb-4">
               {t('hero.title')}
             </h2>
             <p className="text-forge-text-muted mb-8 max-w-md mx-auto">
               {t('hero.subtitle')}
             </p>
-            <Link href="/audit/wizard">
+            <Link href="/audit/wizard" className="block w-full sm:w-auto sm:inline-block">
               <Button
                 size="lg"
-                className="h-14 px-8 text-base font-semibold bg-forge-accent text-forge-base hover:bg-forge-accent-hover gold-glow gold-glow-hover transition-all duration-300 cursor-pointer group"
+                className="w-full sm:w-auto h-14 px-8 text-base font-semibold bg-forge-accent text-forge-base hover:bg-forge-accent-hover gold-glow gold-glow-hover transition-all duration-300 cursor-pointer group"
               >
                 {t('hero.cta')}
                 <ArrowRight className="size-4 ml-2 transition-transform duration-200 group-hover:translate-x-1" />

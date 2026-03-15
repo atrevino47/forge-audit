@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { useTranslations } from '@/hooks/use-translations';
@@ -12,6 +13,11 @@ import { ActionPlan } from './ActionPlan';
 import { LandingPagePreview } from './LandingPagePreview';
 import { ResultsCTA } from './ResultsCTA';
 import { SaveResultsModal } from './SaveResultsModal';
+
+const CalEmbed = dynamic(
+  () => import('@/components/shared/CalEmbed').then((m) => ({ default: m.CalEmbed })),
+  { ssr: false }
+);
 import type { SSEEvent } from '../../../contracts/events';
 import type {
   AuditCategory,
@@ -61,6 +67,7 @@ export function ResultsLayout({ auditId }: ResultsLayoutProps) {
   // UI state
   const [expandedCategory, setExpandedCategory] = useState<AuditCategory | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCalOpen, setIsCalOpen] = useState(false);
   const [globalError, setGlobalError] = useState<string | null>(null);
 
   // SSE connection ref
@@ -151,11 +158,11 @@ export function ResultsLayout({ auditId }: ResultsLayoutProps) {
   }, []);
 
   const handleCompareCompetitors = useCallback(() => {
-    window.location.href = `/compare/${auditId}`;
+    window.location.href = `/payments/checkout?productType=competitor_analysis&auditId=${auditId}`;
   }, [auditId]);
 
   const handleBookCall = useCallback(() => {
-    window.open('https://cal.com/forgedigital/strategy', '_blank', 'noopener,noreferrer');
+    setIsCalOpen(true);
   }, []);
 
   // Derive completed categories in display order
@@ -340,6 +347,9 @@ export function ResultsLayout({ auditId }: ResultsLayoutProps) {
         onClose={() => setIsModalOpen(false)}
         auditId={auditId}
       />
+
+      {/* Cal.com Booking Modal */}
+      <CalEmbed isOpen={isCalOpen} onClose={() => setIsCalOpen(false)} />
     </div>
   );
 }

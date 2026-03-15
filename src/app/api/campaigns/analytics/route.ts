@@ -1,39 +1,84 @@
 import { NextResponse } from 'next/server';
 import { errorResponse } from '@/app/api/_shared/helpers';
+import { createServiceClient } from '@/lib/db';
+import { requireRole, AuthError } from '@/lib/auth/guards';
+
+interface CampaignAnalyticsItem {
+  campaignId: string;
+  clicks: number;
+  auditsStarted: number;
+  auditsCompleted: number;
+  callsBooked: number;
+}
 
 export async function GET(request: Request) {
   try {
-    // TODO Phase 2: requireRole('team', 'admin')
+    await requireRole('team', 'admin');
+    const supabase = createServiceClient();
+
     const { searchParams } = new URL(request.url);
     const campaignId = searchParams.get('campaign_id');
 
-    if (!campaignId) {
-      return errorResponse('INVALID_INPUT', 'campaign_id query parameter is required', 400);
+    // Build base query — select campaign_id and event_type from campaign_analytics
+    let dbQuery = supabase
+      .from('campaign_analytics')
+      .select('campaign_id, event_type');
+
+    // Optionally filter by a specific campaign
+    if (campaignId) {
+      dbQuery = dbQuery.eq('campaign_id', campaignId);
     }
 
-    // TODO Phase 2: Fetch aggregated analytics from campaign_analytics table
-    // TODO Phase 2: Verify caller has access to this campaign
+    const { data: rows, error } = await dbQuery;
 
-    return NextResponse.json({
-      campaignId,
-      summary: {
-        totalClicks: 142,
-        auditsStarted: 87,
-        auditsCompleted: 64,
-        callsBooked: 12,
-        conversionRate: 0.138,
-      },
-      timeline: [
-        { date: '2026-03-07', clicks: 23, auditsStarted: 14, auditsCompleted: 10, callsBooked: 2 },
-        { date: '2026-03-08', clicks: 31, auditsStarted: 19, auditsCompleted: 15, callsBooked: 3 },
-        { date: '2026-03-09', clicks: 28, auditsStarted: 17, auditsCompleted: 12, callsBooked: 2 },
-        { date: '2026-03-10', clicks: 18, auditsStarted: 11, auditsCompleted: 8, callsBooked: 1 },
-        { date: '2026-03-11', clicks: 22, auditsStarted: 13, auditsCompleted: 10, callsBooked: 2 },
-        { date: '2026-03-12', clicks: 20, auditsStarted: 13, auditsCompleted: 9, callsBooked: 2 },
-      ],
-    });
+    if (error) {
+      console.error('Campaign analytics fetch error:', error);
+      return errorResponse('INTERNAL_ERROR', 'Failed to fetch campaign analytics', 500);
+    }
+
+    // Group by campaign_id and count events per type
+    const grouped = new Map<string, { clicks: number; auditsStarted: number; auditsCompleted: number; callsBooked: number }>();
+
+    for (const row of rows ?? []) {
+      const cid = row.campaign_id as string;
+      const eventType = row.event_type as string;
+
+      if (!grouped.has(cid)) {
+        grouped.set(cid, { clicks: 0, auditsStarted: 0, auditsCompleted: 0, callsBooked: 0 });
+      }
+
+      const entry = grouped.get(cid)!;
+      switch (eventType) {
+        case 'click':
+          entry.clicks++;
+          break;
+        case 'audit_started':
+          entry.auditsStarted++;
+          break;
+        case 'audit_completed':
+          entry.auditsCompleted++;
+          break;
+        case 'call_booked':
+          entry.callsBooked++;
+          break;
+      }
+    }
+
+    const analytics: CampaignAnalyticsItem[] = [];
+    for (const [cid, counts] of grouped) {
+      analytics.push({
+        campaignId: cid,
+        ...counts,
+      });
+    }
+
+    return NextResponse.json({ analytics });
   } catch (err) {
     if (err instanceof NextResponse) return err;
+    if (err instanceof AuthError) {
+      const status = err.code === 'UNAUTHORIZED' ? 401 : 403;
+      return errorResponse(err.code, err.message, status);
+    }
     console.error('GET /api/campaigns/analytics error:', err);
     return errorResponse('INTERNAL_ERROR', 'Failed to fetch campaign analytics', 500);
   }

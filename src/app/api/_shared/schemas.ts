@@ -86,6 +86,19 @@ export const teamMemberDeleteSchema = z.object({
   id: z.string().uuid(),
 });
 
+export const updateLeadSchema = z.object({
+  leadId: z.string().uuid(),
+  status: z.enum(['new', 'contacted', 'qualified', 'closed']).optional(),
+});
+
+export const addLeadNoteSchema = z.object({
+  content: z.string().min(1).max(5000),
+  noteType: z.enum(['note', 'call', 'email', 'meeting']).default('note'),
+});
+
+export type UpdateLeadInput = z.infer<typeof updateLeadSchema>;
+export type AddLeadNoteInput = z.infer<typeof addLeadNoteSchema>;
+
 export type StartAuditInput = z.infer<typeof startAuditSchema>;
 export type CompetitorAnalyzeInput = z.infer<typeof competitorAnalyzeSchema>;
 export type CreatePaymentIntentInput = z.infer<typeof createPaymentIntentSchema>;

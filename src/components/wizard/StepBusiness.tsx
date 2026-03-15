@@ -186,8 +186,9 @@ export function StepBusiness({ data, onChange, onNext, onBack, isFirstStep, isLa
                     'placeholder:text-forge-text-muted/50',
                     'outline-none transition-all duration-200',
                     'min-h-[44px]',
+                    'input-focus-glow',
                     hasError
-                      ? 'border-forge-fail focus:border-forge-fail'
+                      ? 'border-forge-fail focus:border-forge-fail focus:shadow-[0_0_0_3px_rgba(239,68,68,0.15),0_0_12px_rgba(239,68,68,0.08)]'
                       : 'border-forge-glass-border focus:border-forge-accent'
                   )}
                 />

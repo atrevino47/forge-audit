@@ -76,7 +76,7 @@ export function StepGBP({ data, onChange, onNext, onBack, isFirstStep, isLastSte
                 'placeholder:text-forge-text-muted/50',
                 'outline-none transition-all duration-200',
                 'min-h-[44px]',
-                'focus:border-forge-accent',
+                'input-focus-glow focus:border-forge-accent',
                 'disabled:cursor-not-allowed'
               )}
             />

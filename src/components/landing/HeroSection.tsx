@@ -36,7 +36,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
-          className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.1] max-w-4xl mx-auto"
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.1] max-w-4xl mx-auto"
         >
           {t('hero.title')}
         </motion.h1>
@@ -46,7 +46,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
-          className="mt-6 text-lg sm:text-xl text-forge-text-muted max-w-2xl mx-auto leading-relaxed"
+          className="mt-5 sm:mt-6 text-base sm:text-lg md:text-xl text-forge-text-muted max-w-2xl mx-auto leading-relaxed"
         >
           {t('hero.subtitle')}
         </motion.p>
@@ -58,10 +58,10 @@ export function HeroSection() {
           transition={{ duration: 0.6, delay: 0.3, ease: 'easeOut' }}
           className="mt-10 flex flex-col items-center gap-4"
         >
-          <Link href="/audit/wizard">
+          <Link href="/audit/wizard" className="w-full sm:w-auto">
             <Button
               size="lg"
-              className="h-14 px-8 text-base font-semibold bg-forge-accent text-forge-base hover:bg-forge-accent-hover gold-glow gold-glow-hover transition-all duration-300 cursor-pointer group"
+              className="w-full sm:w-auto h-14 px-8 text-base font-semibold bg-forge-accent text-forge-base hover:bg-forge-accent-hover gold-glow gold-glow-hover transition-all duration-300 cursor-pointer group"
             >
               {t('hero.cta')}
               <ArrowRight className="size-4 ml-2 transition-transform duration-200 group-hover:translate-x-1" />
@@ -79,7 +79,7 @@ export function HeroSection() {
           transition={{ duration: 0.8, delay: 0.5, ease: 'easeOut' }}
           className="mt-16 sm:mt-20 mx-auto max-w-3xl"
         >
-          <div className="glass-card p-8 rounded-2xl gold-border-glow">
+          <div className="glass-card p-5 sm:p-8 rounded-2xl gold-border-glow">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <div className="size-10 rounded-lg bg-forge-accent/10 flex items-center justify-center">

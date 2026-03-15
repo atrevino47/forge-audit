@@ -1,38 +1,41 @@
 import { NextResponse } from 'next/server';
 import { errorResponse } from '@/app/api/_shared/helpers';
-import type { AuditResult, CategoryResult } from '@contracts/audit-types';
+import { createServiceClient } from '@/lib/db/client';
+import { GRADE_THRESHOLDS, CATEGORY_WEIGHTS, AUDIT_CATEGORIES } from '@contracts/constants';
+import type { AuditResult, CategoryResult, Grade, AuditCategory, Recommendation, SubCategory } from '@contracts/audit-types';
 
-function mockCategoryResult(category: string, score: number): CategoryResult {
-  return {
-    category: category as CategoryResult['category'],
-    score,
-    status: 'completed',
-    subCategories: [
-      {
-        name: `${category} - General`,
-        score,
-        items: [
-          {
-            id: crypto.randomUUID(),
-            label: `${category} check 1`,
-            status: score > 70 ? 'pass' : 'warning',
-            detail: `Mock detail for ${category}`,
-          },
-        ],
-      },
-    ],
-    recommendations: [
-      {
-        id: crypto.randomUUID(),
-        title: `Improve ${category}`,
-        description: `Mock recommendation for ${category}`,
-        priority: score < 60 ? 'high' : 'medium',
-        effort: 'moderate',
-        impact: 'high',
-        category: category as CategoryResult['category'],
-      },
-    ],
-  };
+/**
+ * Determine the letter grade from a numeric score.
+ */
+function scoreToGrade(score: number): Grade {
+  for (const { min, grade } of GRADE_THRESHOLDS) {
+    if (score >= min) {
+      return grade;
+    }
+  }
+  return 'F';
+}
+
+/**
+ * Compute the weighted overall score from individual category scores.
+ */
+function computeOverallScore(
+  categoryScores: Partial<Record<AuditCategory, number>>
+): number {
+  let totalWeight = 0;
+  let weightedSum = 0;
+
+  for (const cat of AUDIT_CATEGORIES) {
+    const score = categoryScores[cat];
+    if (score !== undefined) {
+      const weight = CATEGORY_WEIGHTS[cat];
+      weightedSum += score * weight;
+      totalWeight += weight;
+    }
+  }
+
+  if (totalWeight === 0) return 0;
+  return Math.round(weightedSum / totalWeight);
 }
 
 export async function GET(
@@ -46,56 +49,125 @@ export async function GET(
       return errorResponse('INVALID_INPUT', 'Audit ID is required', 400);
     }
 
-    // TODO Phase 2: Fetch audit + categories from DB
-    // TODO Phase 2: Return 404 if not found, 202 if still running
+    const supabase = createServiceClient();
 
-    const mockResult: AuditResult = {
-      id,
-      overallScore: 68,
-      grade: 'C+',
-      categories: [
-        mockCategoryResult('seo', 72),
-        mockCategoryResult('website', 65),
-        mockCategoryResult('social', 58),
-        mockCategoryResult('branding', 74),
-        mockCategoryResult('gbp', 70),
-        mockCategoryResult('ads', 62),
-        mockCategoryResult('reputation', 75),
-      ],
-      actionPlan: [
+    // Fetch the audit record
+    const { data: audit, error: auditError } = await supabase
+      .from('audits')
+      .select('id, status, overall_score, created_at, completed_at, lead_id')
+      .eq('id', id)
+      .single();
+
+    if (auditError || !audit) {
+      return errorResponse('NOT_FOUND', 'Audit not found', 404);
+    }
+
+    // If the audit is still running or pending, return 202
+    if (audit.status === 'pending' || audit.status === 'running') {
+      return NextResponse.json(
         {
-          id: crypto.randomUUID(),
-          title: 'Fix page speed issues',
-          description: 'Your website loads slowly on mobile devices. Optimize images and minimize JavaScript.',
-          priority: 'high',
-          effort: 'moderate',
-          impact: 'high',
-          category: 'website',
+          id: audit.id,
+          status: audit.status,
+          message: 'Audit is still in progress',
         },
-        {
-          id: crypto.randomUUID(),
-          title: 'Add meta descriptions',
-          description: 'Several pages are missing meta descriptions, hurting CTR in search results.',
-          priority: 'high',
-          effort: 'quick-win',
-          impact: 'medium',
-          category: 'seo',
-        },
-        {
-          id: crypto.randomUUID(),
-          title: 'Increase posting frequency',
-          description: 'Post at least 3x per week on Instagram and 2x on LinkedIn for better engagement.',
-          priority: 'medium',
-          effort: 'moderate',
-          impact: 'medium',
-          category: 'social',
-        },
-      ],
-      createdAt: new Date(Date.now() - 60000).toISOString(),
-      completedAt: new Date().toISOString(),
+        { status: 202 }
+      );
+    }
+
+    // If the audit failed, return error
+    if (audit.status === 'failed') {
+      return errorResponse('AUDIT_FAILED', 'This audit failed to complete', 422);
+    }
+
+    // Fetch audit_categories
+    const { data: categories, error: catError } = await supabase
+      .from('audit_categories')
+      .select('*')
+      .eq('audit_id', id);
+
+    if (catError) {
+      console.error('Failed to fetch audit categories:', catError);
+      return errorResponse('INTERNAL_ERROR', 'Failed to fetch audit categories', 500);
+    }
+
+    // Build category results
+    const categoryScores: Partial<Record<AuditCategory, number>> = {};
+    const categoryResults: CategoryResult[] = [];
+
+    for (const cat of AUDIT_CATEGORIES) {
+      const dbCat = categories?.find(
+        (c) => c.category === cat
+      );
+
+      if (!dbCat) {
+        // Category not yet available — skip
+        continue;
+      }
+
+      const score = typeof dbCat.score === 'number' ? dbCat.score : 0;
+      categoryScores[cat] = score;
+
+      // Parse sub_categories and recommendations from JSON columns
+      const subCategories: SubCategory[] = Array.isArray(dbCat.sub_categories)
+        ? (dbCat.sub_categories as SubCategory[])
+        : [];
+
+      const recommendations: Recommendation[] = Array.isArray(dbCat.recommendations)
+        ? (dbCat.recommendations as Recommendation[])
+        : [];
+
+      categoryResults.push({
+        category: cat,
+        score,
+        status: (dbCat.status as CategoryResult['status']) ?? 'completed',
+        subCategories,
+        recommendations,
+      });
+    }
+
+    // Compute overall score (use DB value if available, otherwise compute)
+    const overallScore =
+      typeof audit.overall_score === 'number'
+        ? audit.overall_score
+        : computeOverallScore(categoryScores);
+
+    const grade = scoreToGrade(overallScore);
+
+    // Build action plan from all high/medium priority recommendations
+    const actionPlan: Recommendation[] = categoryResults
+      .flatMap((c) => c.recommendations)
+      .filter((r) => r.priority === 'high' || r.priority === 'medium')
+      .sort((a, b) => {
+        const priorityOrder: Record<string, number> = { high: 0, medium: 1, low: 2 };
+        return (priorityOrder[a.priority] ?? 2) - (priorityOrder[b.priority] ?? 2);
+      });
+
+    // Check for a generated landing page
+    const { data: generatedPage } = await supabase
+      .from('generated_pages')
+      .select('id, preview_url')
+      .eq('audit_id', id)
+      .single();
+
+    const result: AuditResult = {
+      id: audit.id as string,
+      overallScore,
+      grade,
+      categories: categoryResults,
+      actionPlan,
+      ...(generatedPage
+        ? {
+            generatedPage: {
+              id: generatedPage.id as string,
+              previewUrl: generatedPage.preview_url as string,
+            },
+          }
+        : {}),
+      createdAt: audit.created_at as string,
+      completedAt: (audit.completed_at as string) ?? new Date().toISOString(),
     };
 
-    return NextResponse.json(mockResult);
+    return NextResponse.json(result);
   } catch (err) {
     if (err instanceof NextResponse) return err;
     console.error('GET /api/audit/results/[id] error:', err);

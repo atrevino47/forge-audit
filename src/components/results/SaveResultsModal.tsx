@@ -100,7 +100,7 @@ export function SaveResultsModal({ isOpen, onClose, auditId }: SaveResultsModalP
               <button
                 type="button"
                 onClick={handleGoogleAuth}
-                className="w-full cursor-pointer rounded-lg border border-forge-glass-border bg-white/5 hover:bg-white/10 text-forge-text font-medium py-3 px-4 transition-colors duration-200 flex items-center justify-center gap-3 mb-4"
+                className="w-full cursor-pointer rounded-lg border border-forge-glass-border bg-white/5 hover:bg-white/10 text-forge-text font-medium py-3 px-4 button-micro hover:scale-[1.02] active:scale-[0.97] flex items-center justify-center gap-3 mb-4"
               >
                 {/* Google icon - inline SVG */}
                 <svg className="size-5" viewBox="0 0 24 24" fill="none">
@@ -149,7 +149,7 @@ export function SaveResultsModal({ isOpen, onClose, auditId }: SaveResultsModalP
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder={t('saveModal.emailPlaceholder')}
-                    className="w-full rounded-lg border border-forge-glass-border bg-forge-surface px-4 py-2.5 text-sm text-forge-text placeholder:text-forge-text-muted/50 focus:outline-none focus:border-forge-accent/40 transition-colors duration-200"
+                    className="w-full rounded-lg border border-forge-glass-border bg-forge-surface px-4 py-2.5 text-sm text-forge-text placeholder:text-forge-text-muted/50 focus:outline-none input-focus-glow transition-all duration-200"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') handleMagicLink();
                     }}
@@ -159,7 +159,7 @@ export function SaveResultsModal({ isOpen, onClose, auditId }: SaveResultsModalP
                     onClick={handleMagicLink}
                     disabled={isSending || !email.trim()}
                     className={cn(
-                      'w-full cursor-pointer rounded-lg bg-forge-accent hover:bg-forge-accent-hover text-forge-base font-semibold py-2.5 px-4 transition-colors duration-200 flex items-center justify-center gap-2 text-sm',
+                      'w-full cursor-pointer rounded-lg bg-forge-accent hover:bg-forge-accent-hover text-forge-base font-semibold py-2.5 px-4 button-micro hover:scale-[1.02] active:scale-[0.97] flex items-center justify-center gap-2 text-sm',
                       (isSending || !email.trim()) && 'opacity-50 cursor-not-allowed'
                     )}
                   >

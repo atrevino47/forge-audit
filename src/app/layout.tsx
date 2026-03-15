@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
+import { PageTransition } from '@/components/shared/PageTransition';
 import './globals.css';
 
 const geistSans = Geist({
@@ -13,21 +14,30 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Forge Audit — Free AI-Powered Digital Presence Audit',
+  title: {
+    default: 'Forge Audit — Free AI-Powered Online Presence Audit',
+    template: '%s | Forge Audit',
+  },
   description:
-    'Discover how your business really looks online. Get a free, AI-powered audit of your website, SEO, social media, branding, and more in under 60 seconds.',
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'https://audit.forgedigital.com'),
+    'Get a comprehensive AI-powered audit of your online presence across 7 dimensions — SEO, website quality, social media, branding, Google Business Profile, ads readiness, and reputation.',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://audit.forgedigital.com'),
   openGraph: {
-    title: 'Forge Audit — Free AI-Powered Digital Presence Audit',
+    title: 'Forge Audit — Free AI-Powered Online Presence Audit',
     description:
-      'Discover how your business really looks online. Get a free audit of 7 dimensions of your digital presence.',
+      'Get a comprehensive AI-powered audit of your online presence across 7 dimensions.',
     type: 'website',
-    siteName: 'Forge Audit',
+    images: ['/images/og-image.png'],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Forge Audit — Free Digital Presence Audit',
-    description: 'AI-powered audit of your website, SEO, social media & more.',
+    title: 'Forge Audit — Free AI-Powered Online Presence Audit',
+    description:
+      'Get a comprehensive AI-powered audit of your online presence across 7 dimensions.',
+    images: ['/images/og-image.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
@@ -41,7 +51,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased bg-forge-base text-forge-text`}
       >
-        {children}
+        <PageTransition>{children}</PageTransition>
       </body>
     </html>
   );

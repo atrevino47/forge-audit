@@ -27,7 +27,7 @@ export function ResultsCTA({
               <button
                 type="button"
                 onClick={onSaveResults}
-                className="w-full cursor-pointer rounded-lg bg-forge-accent hover:bg-forge-accent-hover text-forge-base font-semibold py-3 px-5 transition-colors duration-200 flex items-center justify-center gap-2"
+                className="w-full cursor-pointer rounded-lg bg-forge-accent hover:bg-forge-accent-hover text-forge-base font-semibold py-3 px-5 button-micro hover:scale-[1.02] active:scale-[0.97] flex items-center justify-center gap-2 gold-glow gold-glow-hover"
               >
                 <Bookmark className="size-4" />
                 {t('cta.save')}
@@ -43,7 +43,7 @@ export function ResultsCTA({
             <button
               type="button"
               onClick={onCompareCompetitors}
-              className="w-full cursor-pointer rounded-lg border border-forge-glass-border hover:border-forge-accent/30 bg-transparent text-forge-text font-semibold py-3 px-5 transition-colors duration-200 flex items-center justify-center gap-2"
+              className="w-full cursor-pointer rounded-lg border border-forge-glass-border hover:border-forge-accent/30 bg-transparent text-forge-text font-semibold py-3 px-5 button-micro hover:scale-[1.02] active:scale-[0.97] flex items-center justify-center gap-2"
             >
               <BarChart3 className="size-4" />
               {t('cta.compare')}
@@ -61,7 +61,7 @@ export function ResultsCTA({
             <button
               type="button"
               onClick={onBookCall}
-              className="w-full cursor-pointer rounded-lg bg-transparent text-forge-accent hover:text-forge-accent-hover font-medium py-3 px-5 transition-colors duration-200 flex items-center justify-center gap-2 underline-offset-4 hover:underline"
+              className="w-full cursor-pointer rounded-lg bg-transparent text-forge-accent hover:text-forge-accent-hover font-medium py-3 px-5 button-micro hover:scale-[1.02] active:scale-[0.97] flex items-center justify-center gap-2 underline-offset-4 hover:underline"
             >
               <Phone className="size-4" />
               {t('cta.bookCall')}
@@ -81,7 +81,7 @@ export function ResultsCTA({
             <button
               type="button"
               onClick={onSaveResults}
-              className="flex-1 cursor-pointer rounded-lg bg-forge-accent hover:bg-forge-accent-hover text-forge-base font-semibold py-2.5 px-3 transition-colors duration-200 flex items-center justify-center gap-1.5 text-sm"
+              className="flex-1 cursor-pointer rounded-lg bg-forge-accent hover:bg-forge-accent-hover text-forge-base font-semibold py-2.5 px-3 button-micro active:scale-[0.97] flex items-center justify-center gap-1.5 text-sm min-h-[44px]"
             >
               <Bookmark className="size-3.5" />
               {t('cta.save')}
@@ -92,7 +92,7 @@ export function ResultsCTA({
           <button
             type="button"
             onClick={onCompareCompetitors}
-            className="flex-1 cursor-pointer rounded-lg border border-forge-glass-border hover:border-forge-accent/30 text-forge-text font-semibold py-2.5 px-3 transition-colors duration-200 flex items-center justify-center gap-1.5 text-sm"
+            className="flex-1 cursor-pointer rounded-lg border border-forge-glass-border hover:border-forge-accent/30 text-forge-text font-semibold py-2.5 px-3 button-micro active:scale-[0.97] flex items-center justify-center gap-1.5 text-sm min-h-[44px]"
           >
             <BarChart3 className="size-3.5" />
             {t('cta.compare')}
@@ -102,7 +102,7 @@ export function ResultsCTA({
           <button
             type="button"
             onClick={onBookCall}
-            className="cursor-pointer text-forge-accent hover:text-forge-accent-hover transition-colors duration-200 p-2.5"
+            className="cursor-pointer text-forge-accent hover:text-forge-accent-hover button-micro active:scale-[0.97] p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center"
             aria-label={t('cta.bookCall')}
           >
             <Phone className="size-4" />

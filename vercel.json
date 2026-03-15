@@ -1,0 +1,23 @@
+{
+  "crons": [
+    {
+      "path": "/api/email/abandoned",
+      "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/email/reaudit-reminder",
+      "schedule": "0 9 * * *"
+    }
+  ],
+  "functions": {
+    "src/app/api/audit/start/route.ts": {
+      "maxDuration": 60
+    },
+    "src/app/api/audit/status/[id]/route.ts": {
+      "maxDuration": 120
+    },
+    "src/app/api/landing-page/generate/route.ts": {
+      "maxDuration": 60
+    }
+  }
+}

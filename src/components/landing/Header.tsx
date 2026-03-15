@@ -56,9 +56,9 @@ export function Header() {
             </Link>
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile menu button — min 44px touch target */}
           <button
-            className="md:hidden p-2 text-forge-text-muted hover:text-forge-text transition-colors cursor-pointer"
+            className="md:hidden p-3 min-h-[44px] min-w-[44px] flex items-center justify-center text-forge-text-muted hover:text-forge-text button-micro active:scale-[0.95] cursor-pointer"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
           >
@@ -82,7 +82,7 @@ export function Header() {
                 <a
                   key={link.href}
                   href={link.href}
-                  className="block py-2 text-sm text-forge-text-muted hover:text-forge-text transition-colors cursor-pointer"
+                  className="block py-3 min-h-[44px] flex items-center text-sm text-forge-text-muted hover:text-forge-text transition-colors cursor-pointer"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {link.label}
