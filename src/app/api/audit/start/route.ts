@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, after } from 'next/server';
 import { parseBody, errorResponse } from '@/app/api/_shared/helpers';
 import { startAuditSchema } from '@/app/api/_shared/schemas';
 import type { StartAuditResponse } from '@contracts/api-contracts';
@@ -68,11 +68,13 @@ export async function POST(request: Request) {
 
     const auditId: string = audit.id;
 
-    // ── Fire-and-forget: run orchestrator in background ─────────────────────
-    runAudit(auditId, body).catch(console.error);
-
-    // ── Fire-and-forget: record rate-limit usage ────────────────────────────
-    recordAuditUsage(body.email, ip).catch(console.error);
+    // ── Run orchestrator after response (keeps function alive on Vercel) ────
+    after(async () => {
+      await Promise.all([
+        runAudit(auditId, body).catch(console.error),
+        recordAuditUsage(body.email, ip).catch(console.error),
+      ]);
+    });
 
     // ── Respond ─────────────────────────────────────────────────────────────
     const response: StartAuditResponse = {
