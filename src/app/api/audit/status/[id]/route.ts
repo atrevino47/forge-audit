@@ -8,7 +8,7 @@ import { AUDIT_CATEGORIES } from '@contracts/constants';
 const activeConnections = new Map<string, AbortController>();
 
 function formatSSE(event: SSEEvent): string {
-  return `event: ${event.type}\ndata: ${JSON.stringify(event)}\n\n`;
+  return `data: ${JSON.stringify(event)}\n\n`;
 }
 
 // Maximum time to poll before giving up (90 seconds)
