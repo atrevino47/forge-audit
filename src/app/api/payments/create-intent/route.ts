@@ -55,10 +55,9 @@ export async function POST(request: Request) {
 
     // Store pending payment in payments table
     await supabase.from('payments').insert({
-      stripe_payment_intent_id: paymentIntent.id,
-      audit_id: body.auditId,
+      stripe_payment_id: paymentIntent.id,
       lead_id: leadId,
-      amount,
+      amount_cents: amount,
       currency: 'usd',
       product_type: body.productType,
       status: 'pending',

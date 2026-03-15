@@ -41,8 +41,8 @@ export async function POST(request: Request) {
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
         const { error } = await supabase
           .from('payments')
-          .update({ status: 'completed', updated_at: new Date().toISOString() })
-          .eq('stripe_payment_intent_id', paymentIntent.id);
+          .update({ status: 'completed' })
+          .eq('stripe_payment_id', paymentIntent.id);
 
         if (error) {
           console.error('Failed to update payment status:', error);
@@ -56,8 +56,8 @@ export async function POST(request: Request) {
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
         const { error } = await supabase
           .from('payments')
-          .update({ status: 'failed', updated_at: new Date().toISOString() })
-          .eq('stripe_payment_intent_id', paymentIntent.id);
+          .update({ status: 'failed' })
+          .eq('stripe_payment_id', paymentIntent.id);
 
         if (error) {
           console.error('Failed to update payment status to failed:', error);
@@ -76,8 +76,8 @@ export async function POST(request: Request) {
         if (paymentIntentId) {
           const { error } = await supabase
             .from('payments')
-            .update({ status: 'refunded', updated_at: new Date().toISOString() })
-            .eq('stripe_payment_intent_id', paymentIntentId);
+            .update({ status: 'refunded' })
+            .eq('stripe_payment_id', paymentIntentId);
 
           if (error) {
             console.error('Failed to update payment status to refunded:', error);

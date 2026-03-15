@@ -28,6 +28,21 @@ const nextConfig: NextConfig = {
         destination: '/admin/dashboard',
         permanent: false,
       },
+      {
+        source: '/audit',
+        destination: '/audit/wizard',
+        permanent: false,
+      },
+      {
+        source: '/login',
+        destination: '/auth/login',
+        permanent: false,
+      },
+      {
+        source: '/checkout',
+        destination: '/payments/checkout',
+        permanent: false,
+      },
     ];
   },
 };

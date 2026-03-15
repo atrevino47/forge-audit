@@ -140,11 +140,13 @@ export async function POST(request: Request) {
       .from('generated_pages')
       .insert({
         audit_id: body.auditId,
-        lead_id: auditRow.lead_id,
-        html,
-        business_name: businessInfo.name,
-        brand_colors: brandColors,
-        language,
+        html_content: html,
+        metadata: {
+          lead_id: auditRow.lead_id,
+          business_name: businessInfo.name,
+          brand_colors: brandColors,
+          language,
+        },
       })
       .select('id')
       .single();

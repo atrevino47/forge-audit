@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { errorResponse } from '@/app/api/_shared/helpers';
+import { createServiceClient } from '@/lib/db/client';
 
 export async function GET(request: Request) {
   try {
@@ -10,17 +11,25 @@ export async function GET(request: Request) {
       return errorResponse('INVALID_INPUT', 'payment_intent_id query parameter is required', 400);
     }
 
-    // TODO Phase 3: requireAuth()
-    // TODO Phase 3: Look up payment in payments table by stripe_payment_id
-    // TODO Phase 3: Return actual status from Stripe if not in DB
+    const supabase = createServiceClient();
+
+    const { data: payment, error } = await supabase
+      .from('payments')
+      .select('id, stripe_payment_id, status, product_type, amount_cents, currency, created_at')
+      .eq('stripe_payment_id', paymentIntentId)
+      .single();
+
+    if (error || !payment) {
+      return errorResponse('NOT_FOUND', 'Payment not found', 404);
+    }
 
     return NextResponse.json({
-      paymentIntentId,
-      status: 'completed',
-      productType: 'competitor_analysis',
-      amount: 9900,
-      currency: 'usd',
-      createdAt: new Date().toISOString(),
+      paymentIntentId: payment.stripe_payment_id,
+      status: payment.status,
+      productType: payment.product_type,
+      amount: payment.amount_cents,
+      currency: payment.currency,
+      createdAt: payment.created_at,
     });
   } catch (err) {
     if (err instanceof NextResponse) return err;
