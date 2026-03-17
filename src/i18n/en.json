@@ -1,10 +1,12 @@
 {
   "landing": {
     "hero": {
-      "title": "Your online presence, scored in 60 seconds",
-      "subtitle": "7 dimensions. Real data. Actionable plan.",
-      "cta": "Start your free audit",
-      "noCreditCard": "Free, no credit card required"
+      "badge": "AI-Powered · 7 Dimensions · Free",
+      "title": "Your Digital Presence Has",
+      "titleAccent": "Blind Spots",
+      "subtitle": "Right now, potential customers are judging your website, your SEO, your reviews — and leaving. Find out exactly where you're losing them.",
+      "cta": "Find My Blind Spots",
+      "ctaSubtext": "No signup · No credit card · Results in 60 seconds"
     },
     "howItWorks": {
       "title": "How it works",

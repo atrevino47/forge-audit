@@ -1,10 +1,12 @@
 {
   "landing": {
     "hero": {
-      "title": "Tu presencia en línea, evaluada en 60 segundos",
-      "subtitle": "7 dimensiones. Datos reales. Plan de acción.",
-      "cta": "Inicia tu auditoría gratuita",
-      "noCreditCard": "Gratis, sin tarjeta de crédito"
+      "badge": "IA · 7 Dimensiones · Gratis",
+      "title": "Tu Presencia Digital Tiene",
+      "titleAccent": "Puntos Ciegos",
+      "subtitle": "Ahora mismo, clientes potenciales están juzgando tu sitio web, tu SEO, tus reseñas — y se van. Descubre exactamente dónde los estás perdiendo.",
+      "cta": "Encontrar Mis Puntos Ciegos",
+      "ctaSubtext": "Sin registro · Sin tarjeta · Resultados en 60 segundos"
     },
     "howItWorks": {
       "title": "Cómo funciona",

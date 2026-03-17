@@ -92,6 +92,7 @@ export function useEntranceAnimation(options?: {
         duration: duration as number,
         ease: ease as string,
         force3D: true,
+        immediateRender: true,
       }, beat.delay);
     });
   }, { scope: containerRef, dependencies: [] });

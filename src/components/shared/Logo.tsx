@@ -31,7 +31,7 @@ export function Logo({ className, size = 'md', showText = true }: LogoProps) {
         />
       </div>
       {showText && (
-        <span className={cn(textSizeMap[size], 'font-bold tracking-tight text-forge-text')}>
+        <span className={cn(textSizeMap[size], 'font-display font-bold tracking-tight text-forge-text')}>
           Forge
           <span className="text-forge-accent">Audit</span>
         </span>
