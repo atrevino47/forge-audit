@@ -12,6 +12,11 @@ import {
   Calendar,
   Clock,
   ArrowRightLeft,
+  ExternalLink,
+  Play,
+  RefreshCw,
+  Loader2,
+  BarChart3,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GlassCard } from '@/components/shared/GlassCard';
@@ -44,6 +49,26 @@ interface LeadNote {
   noteType: 'note' | 'call' | 'email' | 'status_change' | 'meeting';
   createdAt: string;
 }
+
+interface AuditCategoryData {
+  category: string;
+  status: string;
+  score: number | null;
+  results: Record<string, unknown> | null;
+}
+
+interface LeadAuditData {
+  id: string;
+  status: string;
+  overallScore: number | null;
+  overallGrade: string | null;
+  createdAt: string;
+  completedAt: string | null;
+  inputs: Record<string, unknown>;
+  categories: AuditCategoryData[];
+}
+
+type PanelTab = 'details' | 'audit';
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
@@ -112,6 +137,27 @@ const noteTypeLabels: Record<string, string> = {
   status_change: 'Status Change',
 };
 
+function categoryStatusColor(status: string, score: number | null): string {
+  if (status === 'failed') return 'border-red-500/30 bg-red-500/5';
+  if (score === null) return 'border-forge-glass-border bg-forge-glass';
+  if (score >= 80) return 'border-green-500/30 bg-green-500/5';
+  if (score >= 60) return 'border-yellow-500/30 bg-yellow-500/5';
+  if (score >= 40) return 'border-orange-500/30 bg-orange-500/5';
+  return 'border-red-500/30 bg-red-500/5';
+}
+
+function categoryScoreColor(score: number | null): string {
+  if (score === null) return 'text-forge-text-muted';
+  if (score >= 80) return 'text-green-400';
+  if (score >= 60) return 'text-yellow-400';
+  if (score >= 40) return 'text-orange-400';
+  return 'text-red-400';
+}
+
+function categoryLabel(category: string): string {
+  return category.charAt(0).toUpperCase() + category.slice(1);
+}
+
 /* ------------------------------------------------------------------ */
 /*  Lead Detail Panel                                                  */
 /* ------------------------------------------------------------------ */
@@ -134,6 +180,17 @@ function LeadDetailPanel({
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // Tab state
+  const [activeTab, setActiveTab] = useState<PanelTab>('details');
+
+  // Audit tab state
+  const [auditData, setAuditData] = useState<LeadAuditData | null>(null);
+  const [loadingAudit, setLoadingAudit] = useState(false);
+  const [auditFetched, setAuditFetched] = useState(false);
+  const [runningAudit, setRunningAudit] = useState(false);
+  const [auditError, setAuditError] = useState<string | null>(null);
+  const [newAuditId, setNewAuditId] = useState<string | null>(null);
+
   const fetchNotes = useCallback(async () => {
     setLoadingNotes(true);
     try {
@@ -149,9 +206,35 @@ function LeadDetailPanel({
     }
   }, [lead.id]);
 
+  const fetchAudit = useCallback(async () => {
+    setLoadingAudit(true);
+    setAuditError(null);
+    try {
+      const res = await fetch(`/api/admin/leads/${lead.id}/audit`);
+      if (res.ok) {
+        const json = await res.json();
+        setAuditData(json.audit ?? null);
+      } else {
+        setAuditError('Failed to load audit data');
+      }
+    } catch {
+      setAuditError('Failed to load audit data');
+    } finally {
+      setLoadingAudit(false);
+      setAuditFetched(true);
+    }
+  }, [lead.id]);
+
   useEffect(() => {
     fetchNotes();
   }, [fetchNotes]);
+
+  // Fetch audit data when switching to audit tab for the first time
+  useEffect(() => {
+    if (activeTab === 'audit' && !auditFetched) {
+      fetchAudit();
+    }
+  }, [activeTab, auditFetched, fetchAudit]);
 
   const handleStatusChange = async (newStatus: LeadListItem['status']) => {
     if (newStatus === currentStatus) return;
@@ -195,6 +278,30 @@ function LeadDetailPanel({
       // silently fail
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleRunAudit = async () => {
+    setRunningAudit(true);
+    setAuditError(null);
+    setNewAuditId(null);
+    try {
+      const res = await fetch(`/api/admin/leads/${lead.id}/run-audit`, {
+        method: 'POST',
+      });
+      if (res.ok) {
+        const json = await res.json();
+        setNewAuditId(json.auditId as string);
+        // Refresh audit data after a short delay to show the new pending audit
+        setAuditFetched(false);
+      } else {
+        const json = await res.json().catch(() => null);
+        setAuditError(json?.error?.message ?? `Failed to start audit (${res.status})`);
+      }
+    } catch {
+      setAuditError('Failed to start audit');
+    } finally {
+      setRunningAudit(false);
     }
   };
 
@@ -247,133 +354,347 @@ function LeadDetailPanel({
             </div>
           </div>
 
-          {/* Info Section */}
-          <div className="px-6 py-4 border-b border-forge-glass-border flex-shrink-0">
-            <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
-              <div>
-                <span className="text-forge-text-muted text-xs uppercase tracking-wider">Email</span>
-                <a href={`mailto:${lead.email}`} className="block text-forge-accent hover:underline truncate mt-0.5">
-                  {lead.email}
-                </a>
-              </div>
-              <div>
-                <span className="text-forge-text-muted text-xs uppercase tracking-wider">Website</span>
-                <a
-                  href={lead.websiteUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-forge-accent hover:underline truncate mt-0.5"
-                >
-                  {lead.websiteUrl}
-                </a>
-              </div>
-              <div>
-                <span className="text-forge-text-muted text-xs uppercase tracking-wider">Score / Grade</span>
-                <div className="flex items-center gap-2 mt-0.5">
-                  <span className="font-semibold tabular-nums">{lead.overallScore ?? '--'}</span>
-                  <span className={`font-bold ${gradeColor(lead.grade)}`}>{lead.grade ?? '--'}</span>
-                </div>
-              </div>
-              <div>
-                <span className="text-forge-text-muted text-xs uppercase tracking-wider">Source</span>
-                <p className="capitalize mt-0.5">
-                  {lead.source}
-                  {lead.campaignName ? ` (${lead.campaignName})` : ''}
-                </p>
-              </div>
-              <div className="col-span-2">
-                <span className="text-forge-text-muted text-xs uppercase tracking-wider">Created</span>
-                <p className="mt-0.5">{formatDate(lead.createdAt)}</p>
-              </div>
-            </div>
+          {/* Tab Buttons */}
+          <div className="flex border-b border-forge-glass-border flex-shrink-0">
+            <button
+              onClick={() => setActiveTab('details')}
+              className={`flex-1 px-4 py-3 text-sm font-medium transition-colors relative ${
+                activeTab === 'details'
+                  ? 'text-forge-accent'
+                  : 'text-forge-text-muted hover:text-forge-text'
+              }`}
+            >
+              Details
+              {activeTab === 'details' && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-forge-accent" />
+              )}
+            </button>
+            <button
+              onClick={() => setActiveTab('audit')}
+              className={`flex-1 px-4 py-3 text-sm font-medium transition-colors relative flex items-center justify-center gap-2 ${
+                activeTab === 'audit'
+                  ? 'text-forge-accent'
+                  : 'text-forge-text-muted hover:text-forge-text'
+              }`}
+            >
+              <BarChart3 className="size-4" />
+              Audit Results
+              {activeTab === 'audit' && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-forge-accent" />
+              )}
+            </button>
           </div>
 
-          {/* Notes / Activity */}
-          <div className="flex-1 flex flex-col overflow-hidden">
-            {/* Add Note Form */}
-            <form onSubmit={handleSubmitNote} className="px-6 py-4 border-b border-forge-glass-border flex-shrink-0">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-sm font-medium">Add Note</span>
-                <select
-                  value={noteType}
-                  onChange={(e) => setNoteType(e.target.value as typeof noteType)}
-                  className="ml-auto px-2 py-1 rounded-md bg-forge-glass border border-forge-glass-border text-xs text-forge-text focus:outline-none focus:border-forge-accent/40"
-                >
-                  <option value="note">Note</option>
-                  <option value="call">Call</option>
-                  <option value="email">Email</option>
-                  <option value="meeting">Meeting</option>
-                </select>
+          {/* Tab Content */}
+          {activeTab === 'details' ? (
+            <>
+              {/* Info Section */}
+              <div className="px-6 py-4 border-b border-forge-glass-border flex-shrink-0">
+                <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
+                  <div>
+                    <span className="text-forge-text-muted text-xs uppercase tracking-wider">Email</span>
+                    <a href={`mailto:${lead.email}`} className="block text-forge-accent hover:underline truncate mt-0.5">
+                      {lead.email}
+                    </a>
+                  </div>
+                  <div>
+                    <span className="text-forge-text-muted text-xs uppercase tracking-wider">Website</span>
+                    <a
+                      href={lead.websiteUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block text-forge-accent hover:underline truncate mt-0.5"
+                    >
+                      {lead.websiteUrl}
+                    </a>
+                  </div>
+                  <div>
+                    <span className="text-forge-text-muted text-xs uppercase tracking-wider">Score / Grade</span>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="font-semibold tabular-nums">{lead.overallScore ?? '--'}</span>
+                      <span className={`font-bold ${gradeColor(lead.grade)}`}>{lead.grade ?? '--'}</span>
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-forge-text-muted text-xs uppercase tracking-wider">Source</span>
+                    <p className="capitalize mt-0.5">
+                      {lead.source}
+                      {lead.campaignName ? ` (${lead.campaignName})` : ''}
+                    </p>
+                  </div>
+                  <div className="col-span-2">
+                    <span className="text-forge-text-muted text-xs uppercase tracking-wider">Created</span>
+                    <p className="mt-0.5">{formatDate(lead.createdAt)}</p>
+                  </div>
+                </div>
               </div>
-              <textarea
-                value={noteContent}
-                onChange={(e) => setNoteContent(e.target.value)}
-                placeholder="Write a note..."
-                rows={3}
-                className="w-full px-3 py-2 rounded-lg bg-forge-base/50 border border-forge-glass-border text-sm text-forge-text placeholder:text-forge-text-muted focus:outline-none focus:border-forge-accent/40 resize-none"
-              />
-              <div className="flex justify-end mt-2">
-                <button
-                  type="submit"
-                  disabled={!noteContent.trim() || submitting}
-                  className="px-4 py-1.5 rounded-lg bg-forge-accent text-forge-base text-sm font-medium hover:bg-forge-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                >
-                  {submitting ? 'Saving...' : 'Add Note'}
-                </button>
-              </div>
-            </form>
 
-            {/* Timeline */}
-            <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 py-4">
-              {loadingNotes ? (
-                <p className="text-sm text-forge-text-muted text-center py-8">Loading activity...</p>
-              ) : notes.length === 0 ? (
-                <p className="text-sm text-forge-text-muted text-center py-8">No activity yet.</p>
-              ) : (
-                <div className="space-y-4">
-                  {notes.map((note) => {
-                    const Icon = noteTypeIcons[note.noteType] ?? MessageSquare;
-                    const isSystemEntry = note.noteType === 'status_change';
+              {/* Notes / Activity */}
+              <div className="flex-1 flex flex-col overflow-hidden">
+                {/* Add Note Form */}
+                <form onSubmit={handleSubmitNote} className="px-6 py-4 border-b border-forge-glass-border flex-shrink-0">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-sm font-medium">Add Note</span>
+                    <select
+                      value={noteType}
+                      onChange={(e) => setNoteType(e.target.value as typeof noteType)}
+                      className="ml-auto px-2 py-1 rounded-md bg-forge-glass border border-forge-glass-border text-xs text-forge-text focus:outline-none focus:border-forge-accent/40"
+                    >
+                      <option value="note">Note</option>
+                      <option value="call">Call</option>
+                      <option value="email">Email</option>
+                      <option value="meeting">Meeting</option>
+                    </select>
+                  </div>
+                  <textarea
+                    value={noteContent}
+                    onChange={(e) => setNoteContent(e.target.value)}
+                    placeholder="Write a note..."
+                    rows={3}
+                    className="w-full px-3 py-2 rounded-lg bg-forge-base/50 border border-forge-glass-border text-sm text-forge-text placeholder:text-forge-text-muted focus:outline-none focus:border-forge-accent/40 resize-none"
+                  />
+                  <div className="flex justify-end mt-2">
+                    <button
+                      type="submit"
+                      disabled={!noteContent.trim() || submitting}
+                      className="px-4 py-1.5 rounded-lg bg-forge-accent text-forge-base text-sm font-medium hover:bg-forge-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {submitting ? 'Saving...' : 'Add Note'}
+                    </button>
+                  </div>
+                </form>
 
-                    return (
-                      <div key={note.id} className="flex gap-3">
-                        <div
-                          className={`flex-shrink-0 mt-0.5 size-8 rounded-full flex items-center justify-center ${
-                            isSystemEntry
-                              ? 'bg-forge-text-muted/10 text-forge-text-muted'
-                              : 'bg-forge-accent/10 text-forge-accent'
-                          }`}
-                        >
-                          <Icon className="size-4" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2 text-xs">
-                            <span className={`font-medium ${isSystemEntry ? 'text-forge-text-muted' : 'text-forge-text'}`}>
-                              {note.authorName}
-                            </span>
-                            <span className="text-forge-text-muted">
-                              {noteTypeLabels[note.noteType] ?? note.noteType}
-                            </span>
-                            <span className="text-forge-text-muted/60 ml-auto flex items-center gap-1 flex-shrink-0">
-                              <Clock className="size-3" />
-                              {relativeTime(note.createdAt)}
-                            </span>
+                {/* Timeline */}
+                <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 py-4">
+                  {loadingNotes ? (
+                    <p className="text-sm text-forge-text-muted text-center py-8">Loading activity...</p>
+                  ) : notes.length === 0 ? (
+                    <p className="text-sm text-forge-text-muted text-center py-8">No activity yet.</p>
+                  ) : (
+                    <div className="space-y-4">
+                      {notes.map((note) => {
+                        const Icon = noteTypeIcons[note.noteType] ?? MessageSquare;
+                        const isSystemEntry = note.noteType === 'status_change';
+
+                        return (
+                          <div key={note.id} className="flex gap-3">
+                            <div
+                              className={`flex-shrink-0 mt-0.5 size-8 rounded-full flex items-center justify-center ${
+                                isSystemEntry
+                                  ? 'bg-forge-text-muted/10 text-forge-text-muted'
+                                  : 'bg-forge-accent/10 text-forge-accent'
+                              }`}
+                            >
+                              <Icon className="size-4" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center gap-2 text-xs">
+                                <span className={`font-medium ${isSystemEntry ? 'text-forge-text-muted' : 'text-forge-text'}`}>
+                                  {note.authorName}
+                                </span>
+                                <span className="text-forge-text-muted">
+                                  {noteTypeLabels[note.noteType] ?? note.noteType}
+                                </span>
+                                <span className="text-forge-text-muted/60 ml-auto flex items-center gap-1 flex-shrink-0">
+                                  <Clock className="size-3" />
+                                  {relativeTime(note.createdAt)}
+                                </span>
+                              </div>
+                              <p
+                                className={`text-sm mt-1 ${
+                                  isSystemEntry ? 'text-forge-text-muted italic' : 'text-forge-text'
+                                }`}
+                              >
+                                {note.content}
+                              </p>
+                            </div>
                           </div>
-                          <p
-                            className={`text-sm mt-1 ${
-                              isSystemEntry ? 'text-forge-text-muted italic' : 'text-forge-text'
-                            }`}
-                          >
-                            {note.content}
-                          </p>
-                        </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
+          ) : (
+            /* Audit Results Tab */
+            <div className="flex-1 overflow-y-auto px-6 py-4">
+              {loadingAudit ? (
+                <div className="flex flex-col items-center justify-center py-12 gap-3">
+                  <Loader2 className="size-6 text-forge-accent animate-spin" />
+                  <p className="text-sm text-forge-text-muted">Loading audit data...</p>
+                </div>
+              ) : auditError && !auditData ? (
+                <div className="text-center py-12">
+                  <p className="text-sm text-red-400 mb-4">{auditError}</p>
+                  <button
+                    onClick={fetchAudit}
+                    className="px-4 py-2 rounded-lg bg-forge-glass border border-forge-glass-border text-sm text-forge-text hover:border-forge-accent/40 transition-colors"
+                  >
+                    Retry
+                  </button>
+                </div>
+              ) : !auditData ? (
+                /* No audit exists */
+                <div className="flex flex-col items-center justify-center py-12 gap-4">
+                  <div className="size-16 rounded-full bg-forge-glass flex items-center justify-center">
+                    <BarChart3 className="size-8 text-forge-text-muted" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm font-medium">No audit completed</p>
+                    <p className="text-xs text-forge-text-muted mt-1">
+                      Run an audit to analyze this lead&apos;s online presence
+                    </p>
+                  </div>
+                  {auditError && (
+                    <p className="text-xs text-red-400">{auditError}</p>
+                  )}
+                  {newAuditId ? (
+                    <div className="text-center">
+                      <p className="text-sm text-green-400 mb-2">Audit started successfully</p>
+                      <a
+                        href={`/audit/results/${newAuditId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-forge-accent text-forge-base text-sm font-medium hover:bg-forge-accent/90 transition-colors"
+                      >
+                        View Results <ExternalLink className="size-3.5" />
+                      </a>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={handleRunAudit}
+                      disabled={runningAudit}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-forge-accent text-forge-base text-sm font-medium hover:bg-forge-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {runningAudit ? (
+                        <>
+                          <Loader2 className="size-4 animate-spin" />
+                          Starting Audit...
+                        </>
+                      ) : (
+                        <>
+                          <Play className="size-4" />
+                          Run Audit for This Lead
+                        </>
+                      )}
+                    </button>
+                  )}
+                </div>
+              ) : auditData.status === 'running' || auditData.status === 'pending' ? (
+                /* Audit in progress */
+                <div className="flex flex-col items-center justify-center py-12 gap-4">
+                  <Loader2 className="size-8 text-forge-accent animate-spin" />
+                  <div className="text-center">
+                    <p className="text-sm font-medium">Audit in progress...</p>
+                    <p className="text-xs text-forge-text-muted mt-1">
+                      Started {relativeTime(auditData.createdAt)}
+                    </p>
+                  </div>
+                  <a
+                    href={`/audit/results/${auditData.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-forge-glass border border-forge-glass-border text-sm text-forge-accent hover:border-forge-accent/40 transition-colors"
+                  >
+                    View Live Results <ExternalLink className="size-3.5" />
+                  </a>
+                </div>
+              ) : (
+                /* Completed (or failed) audit */
+                <div className="space-y-4">
+                  {/* Overall Score */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs text-forge-text-muted uppercase tracking-wider">Overall Score</p>
+                      <div className="flex items-center gap-3 mt-1">
+                        <span className="text-3xl font-bold tabular-nums">
+                          {auditData.overallScore ?? '--'}
+                        </span>
+                        <span className={`text-2xl font-bold ${gradeColor(auditData.overallGrade)}`}>
+                          {auditData.overallGrade ?? '--'}
+                        </span>
                       </div>
-                    );
-                  })}
+                      {auditData.completedAt && (
+                        <p className="text-xs text-forge-text-muted mt-1">
+                          Completed {relativeTime(auditData.completedAt)}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <a
+                        href={`/audit/results/${auditData.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-forge-glass border border-forge-glass-border text-xs text-forge-accent hover:border-forge-accent/40 transition-colors"
+                      >
+                        View Full Results <ExternalLink className="size-3" />
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* Category Cards */}
+                  <div className="space-y-2">
+                    <p className="text-xs text-forge-text-muted uppercase tracking-wider">Categories</p>
+                    {auditData.categories.map((cat) => (
+                      <div
+                        key={cat.category}
+                        className={`flex items-center justify-between px-4 py-3 rounded-lg border ${categoryStatusColor(cat.status, cat.score)}`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm font-medium">{categoryLabel(cat.category)}</span>
+                          {cat.status === 'failed' && (
+                            <span className="text-xs text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded">Failed</span>
+                          )}
+                        </div>
+                        <span className={`text-lg font-bold tabular-nums ${categoryScoreColor(cat.score)}`}>
+                          {cat.score ?? '--'}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Re-run Audit Button */}
+                  <div className="pt-2 border-t border-forge-glass-border">
+                    {auditError && (
+                      <p className="text-xs text-red-400 mb-2">{auditError}</p>
+                    )}
+                    {newAuditId ? (
+                      <div className="text-center">
+                        <p className="text-sm text-green-400 mb-2">New audit started</p>
+                        <a
+                          href={`/audit/results/${newAuditId}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-forge-accent text-forge-base text-sm font-medium hover:bg-forge-accent/90 transition-colors"
+                        >
+                          View Results <ExternalLink className="size-3.5" />
+                        </a>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={handleRunAudit}
+                        disabled={runningAudit}
+                        className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-forge-glass border border-forge-glass-border text-sm text-forge-text hover:border-forge-accent/40 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      >
+                        {runningAudit ? (
+                          <>
+                            <Loader2 className="size-4 animate-spin" />
+                            Starting Audit...
+                          </>
+                        ) : (
+                          <>
+                            <RefreshCw className="size-4" />
+                            Re-run Audit
+                          </>
+                        )}
+                      </button>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
-          </div>
+          )}
         </GlassCard>
       </motion.div>
     </>

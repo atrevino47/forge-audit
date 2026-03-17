@@ -95,3 +95,70 @@ npm run type-check   # TypeScript strict check
 npx supabase start   # Local Supabase
 npx supabase db push # Push migrations
 ```
+
+## ═══════════════════════════════════════════════════════
+## DESIGN QUALITY RULES (added 2026-03-17)
+## These rules supplement the existing project rules above.
+## For any visual/frontend work, these take priority.
+## ═══════════════════════════════════════════════════════
+
+### Design System Files
+- `src/lib/design-tokens.ts` — Single source of truth for all visual values
+- `src/lib/gsap-presets.ts` — Animation preset factories and hooks
+- Landing page uses GSAP for entrance/scroll animations
+- Wizard, results, admin pages may continue using Framer Motion
+
+### Mandatory Workflow for Visual Work
+1. Read design tokens FIRST: `src/lib/design-tokens.ts`
+2. Read GSAP presets: `src/lib/gsap-presets.ts`
+3. Build static layout first — no animations until approved
+4. Add GSAP animations using presets, document timing in comments
+5. Run quality checklist before presenting
+
+### Typography Rules
+- **Display/Headlines:** Instrument Serif (`font-display` CSS class, `t.font.display` in JS)
+- **Body text:** Plus Jakarta Sans (`font-body` CSS class, `t.font.body` in JS)
+- **Data/technical:** JetBrains Mono (`font-mono` CSS class, `t.font.mono` in JS)
+- NEVER use system defaults for display text
+- Headlines: `letter-spacing: -0.02em`, `line-height: 1.08`
+- Body: `line-height: 1.65`
+- Use `clamp()` for responsive headline sizing, NOT breakpoint stacking
+
+### Color Rules
+- Gold accent (`--forge-accent` / `t.color.accent`) in MAX 5 places per viewport
+- NEVER use pure black or pure white
+- Backgrounds follow 3-tier depth: base → surface → surfaceElevated
+- Semantic colors (green/yellow/red) ONLY for data display, never decoration
+
+### Animation Rules
+- Landing page: ALL entrance animations use GSAP presets from `gsap-presets.ts`
+- CSS transitions OK for hover states only
+- Stagger delays: 100-200ms between sequential elements
+- NEVER use opacity fade alone — always combine with translateY or scale
+- Headlines: use `clipReveal` preset (clip-path wipe)
+- Cards/panels: use `scaleIn` or `fadeSlideUp` preset
+- Document every animation sequence in a comment block:
+```
+/* ANIMATION SEQUENCE:
+ * Beat 1 (0.00s): Badge — fadeSlideUp
+ * Beat 2 (0.15s): Headline — clipReveal
+ * ...
+ */
+```
+
+### Layout Rules
+- Text content max-width: 960px
+- Card grids max-width: 1120px
+- Section vertical padding: minimum 80px
+- Grain overlay present on every page
+- Dot grid background where appropriate
+
+### Banned Patterns
+- ❌ Particle effects or mesh gradient backgrounds
+- ❌ Typewriter/typed effects on headlines
+- ❌ Gradient circle avatars as social proof
+- ❌ Rainbow gradients
+- ❌ Tailwind `animate-bounce` or `animate-pulse` on visible elements
+- ❌ Stock icon grids (circle + icon × 6 in identical cards)
+- ❌ Parallax on text elements
+- ❌ Same animation params on every element in a section
