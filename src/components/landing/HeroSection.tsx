@@ -130,16 +130,16 @@ export function HeroSection() {
   }, []);
 
   /* ── Headline letter-by-letter reveal ─────────────────── */
-  // Line 1: 26 chars × 0.035s = 0.91s, starts at 0.15s
-  // Line 2: delay = 0.15 + (26 × 0.035) + 0.3 = 1.36s
-  // Line 2: 11 chars × 0.035s = 0.385s → headline done at ~1.75s
+  // Line 1: 26 chars × 0.028s = 0.73s, starts at 0.15s
+  // Line 2: delay = 0.15 + (26 × 0.028) + 0.3 = 1.18s
+  // Line 2: 11 chars × 0.028s = 0.31s → headline done at ~1.49s
 
   useGSAP(() => {
     if (!headlineRef.current) return;
     const line1 = headlineRef.current.querySelectorAll('[data-headline-line="1"] span');
     gsap.to(line1, {
       opacity: 1, duration: 0.15, ease: 'power1.out',
-      stagger: 0.035, delay: 0.15,
+      stagger: 0.028, delay: 0.15,
     });
   }, { scope: headlineRef, dependencies: [] });
 
@@ -149,7 +149,7 @@ export function HeroSection() {
     const chars = line2Ref.current.querySelectorAll('span');
     gsap.to(chars, {
       opacity: 1, duration: 0.15, ease: 'power1.out',
-      stagger: 0.035, delay: 1.36,
+      stagger: 0.028, delay: 1.18,
     });
   }, { scope: line2Ref, dependencies: [] });
 
